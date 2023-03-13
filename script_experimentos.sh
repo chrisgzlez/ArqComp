@@ -7,7 +7,7 @@
 
 # Sustituir los valores de Di y Li por los calculados para la realización de la práctica.
 # 
-#
+# lscpu para obtener el tamaño de la cache y las lineas de esta
 # S1 datos = 48KiB / 3MiB total cores con linea de 64 bytes
 # S1 instruction = 32 KiB / 2 MiB total cores con linea de 64 bytes
 # S2 = 1280 KiB / 80 MiB total cores con linea de 64 bytes
@@ -16,7 +16,7 @@
 # R = (Numero de Doubles por Linea / D)*L = ( (TamLinea / TamDouble) / D ) * L = ( 8 / D ) * L
 #  Si D >= 8; R = L (en cada iteracion leemos una liena nueva)
 # D = Separacion de elementos para observar el principio de localidad
-# L = numer de lineas cache diferentes. eg: L = 3; 3 lineas cache
+# L = numero de lineas cache diferentes. eg: L = 3; 3 lineas cache
 #
 #
 # Un elemento do Vector A ten que ser de tamaño L*64 (lineas cache * tamaño linea cache)
