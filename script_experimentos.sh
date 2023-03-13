@@ -37,6 +37,8 @@ L5=$(( $S2 * 2 )) 			# ...
 L6=$(( $S2 * 4 ))
 L7=$(( $S2 * 8 ))
 
+array_d=(2 4 8 16 32 64 128 256 512 1024)
+
 echo $S1
 echo $S2
 
@@ -45,16 +47,16 @@ resultados=()
 
 for i in {1..10} # numero de pruebas
 do
-	for D in {D1,D2,D3,D4,D5} # potencias de 2. que permitan estudiar la localidad
+	for D in ${array_d[@]} # potencias de 2. que permitan estudiar la localidad
 	do
-		echo "------------------------"
 		for L in {$L1,$L2,$L3,$L4,$L5,$L6,$L7}
 		do
-			echo $L
-			resultados+=($(./acp1 $D $L))
+			echo -n " "
+			# ./acp1 $D $L
+			#resultados+=($(./acp1 $D $L))
 		done
 	done
 done
 
-echo ${resultados[@]}
+gcc -Wall acp1.c -o acp1
 
