@@ -24,7 +24,7 @@
 #
 #
 # Compilacion
-# gcc acp1.c -o acp1 -msse3 -O0
+gcc acp1.c -o acp1 -msse3 -O0
 
 S1=$(( (48 << 10) / 64 )) 	# Numero de lineas cache Nivel 1 
 S2=$(( (1280 << 10) / 64 )) # Numero de lineas cache Nivel 2
@@ -58,5 +58,5 @@ do
 	done
 done
 
-gcc -Wall acp1.c -o acp1
+# gcc -Wall acp1.c -o acp1
 
