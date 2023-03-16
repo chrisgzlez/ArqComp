@@ -24,7 +24,7 @@
 #
 #
 # Compilacion
-gcc acp1.c -o acp1 -msse3 -O0
+gcc -Wall acp1.c -o acp1 -msse3 -O0
 
 S1=$(( (48 << 10) / 64 )) 	# Numero de lineas cache Nivel 1 
 S2=$(( (1280 << 10) / 64 )) # Numero de lineas cache Nivel 2
@@ -47,16 +47,17 @@ resultados=()
 
 for i in {1..10} # numero de pruebas
 do
+	sumatorio=0 	# Inicializamos 
 	for D in ${array_d[@]} # potencias de 2. que permitan estudiar la localidad
 	do
 		for L in {$L1,$L2,$L3,$L4,$L5,$L6,$L7}
 		do
-			echo -n " "
-			# ./acp1 $D $L
-			#resultados+=($(./acp1 $D $L))
+			sumatorio=$(./acp1 $D $L)
 		done
 	done
+	resultados+=($sumatorio);
 done
+echo ${resultados[@]}
 
 # gcc -Wall acp1.c -o acp1
 
