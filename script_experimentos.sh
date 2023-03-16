@@ -39,25 +39,16 @@ L7=$(( $S2 * 8 ))
 
 array_d=(2 4 8 16 32 64 128 256 512 1024)
 
-echo $S1
-echo $S2
-
-
-resultados=()
-
 for i in {1..10} # numero de pruebas
 do
-	sumatorio=0 	# Inicializamos 
 	for D in ${array_d[@]} # potencias de 2. que permitan estudiar la localidad
 	do
 		for L in {$L1,$L2,$L3,$L4,$L5,$L6,$L7}
 		do
-			sumatorio=$(./acp1 $D $L)
+			./acp1 $D $L | grep -E 'Res.*' >> ciclos_reloj.csv
 		done
 	done
-	resultados+=($sumatorio);
 done
-echo ${resultados[@]}
 
 # gcc -Wall acp1.c -o acp1
 
