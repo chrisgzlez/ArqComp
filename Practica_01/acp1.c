@@ -90,7 +90,11 @@ int main(int argc, char **argv) {
 
   for (int i = 0; i < R*D; i++) {
     double temp = rand() % 200 / 100.;
-    A[i] += temp < 1.0 ? temp+1 : temp;
+    int sign = rand() % 2;
+    temp  = temp < 1.0 ? (temp+1) : temp;
+    if (sign) temp *= -1;
+    A[i] = temp;
+    printf("%.2f ", A[i]);
   }
 
   start_counter();
