@@ -83,6 +83,10 @@ int main(int argc, char **argv) {
   
 
   // Array de Inidces de acceso a A 
+  int index[R];
+  for (int i = 0; i < R; i++){
+    index[i] = i*D;
+  }
 
   for (int i = 0; i < R*D; i++) {
     double temp = rand() % 200 / 100.;
@@ -98,7 +102,7 @@ int main(int argc, char **argv) {
    res = 0; 
     // Sumatorio de los valores de A
     for (int i = 0; i < R; i++) {
-      res += A[i*D];
+      res += A[index[i]];
     }
 
     results[j] = res;
