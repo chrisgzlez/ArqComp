@@ -83,18 +83,13 @@ int main(int argc, char **argv) {
   
 
   // Array de Inidces de acceso a A 
-  int index[R];
-  for (int i = 0; i < R; i++){
-    index[i] = i*D;
-  }
 
   for (int i = 0; i < R*D; i++) {
     double temp = rand() % 200 / 100.;
     int sign = rand() % 2;
-    temp  = temp < 1.0 ? (temp+1) : temp;
+    temp  = temp < 1 ? (temp+1) : temp;
     if (sign) temp *= -1;
     A[i] = temp;
-    printf("%.2f ", A[i]);
   }
 
   start_counter();
@@ -103,7 +98,7 @@ int main(int argc, char **argv) {
    res = 0; 
     // Sumatorio de los valores de A
     for (int i = 0; i < R; i++) {
-      res += A[index[i]];
+      res += A[i*D];
     }
 
     results[j] = res;
