@@ -1,9 +1,9 @@
 #!/bin/bash
 # Solicitamos un nodo con 64 cores y 256 GB de memoria durante 2 horas
-#SBATCH -n 1 -c 64 -t 02:00:00 --mem=256G
+# SBATCH -n 1 -c 64 -t 02:00:00 --mem=256G
 # Ponemos nombre a nuestro trabajo para poder identificarlo.
 # ATENCIÓN - Debes sustituir el NN por el número de equipo.
-#SBATCH --job-name p1acgNN
+# SBATCH --job-name p1acg37
 
 # Sustituir los valores de Di y Li por los calculados para la realización de la práctica.
 # 
@@ -37,7 +37,7 @@ L5=$(( $S2 * 2 )) 			# ...
 L6=$(( $S2 * 4 ))
 L7=$(( $S2 * 8 ))
 
-array_d=(2 4 8 16 32 64 128 256 512 1024)
+array_d=(2 8 16 32 256)
 
 for i in {1..10} # numero de pruebas
 do
