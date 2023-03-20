@@ -67,6 +67,7 @@ int main(int argc, char **argv) {
   double    res=0, results[10];
   double    t_ck, ck_per_access = 0;                 // clock
   double    *A;
+  int       *index;
   int       D, L;
   int       R;
 
@@ -83,7 +84,7 @@ int main(int argc, char **argv) {
   
 
   // Array de Inidces de acceso a A 
-  int index[R];
+  index = (int*)_mm_malloc(R*sizeof(int), 64);
   for (int i = 0; i < R; i++){
     index[i] = i*D;
   }
@@ -116,6 +117,7 @@ int main(int argc, char **argv) {
   
   fprintf(stdout, "Res, %d, %d, %1.10f\n", D, L, ck_per_access);
 
+  _mm_free(index);
   _mm_free(A);
   
   for (int i = 0; i < 10; i++) {
