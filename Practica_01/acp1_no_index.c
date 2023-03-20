@@ -68,7 +68,6 @@ int main(int argc, char **argv) {
   double    res=0, results[10];
   double    t_ck, ck_per_access = 0; // Ciclos totales y por acceso
   double    *A;
-  int       *index;
   int       D, L;
   int       R;
 
@@ -82,13 +81,6 @@ int main(int argc, char **argv) {
   L = atoi(argv[2]);
   R = D >= 64 / (sizeof (double)) ? L : (L-1) * (8/D) + 1;
   A = (double*)_mm_malloc(R*D*sizeof(double), 64);
-  
-
-  // Inicializacion del array de Indices de acceso a A 
-  index = (int*)_mm_malloc(R*sizeof(int), 64);
-  for (int i = 0; i < R; i++){
-    index[i] = i*D;
-  }
 
   // Fase de Calentamiento: Inicializar A y cargar datos en cache
   for (int i = 0; i < R*D; i++) {
@@ -109,7 +101,7 @@ int main(int argc, char **argv) {
 
     // Reduccion de Suma de los valores de A
     for (int i = 0; i < R; i++) {
-      res += A[index[i]];
+      res += A[i*D];
     }
 
     // Añadimos resultado al array de resultados
@@ -129,8 +121,7 @@ int main(int argc, char **argv) {
   // Se incluyo la palabra Res para facilitar el filtrado mediante grep
   fprintf(stdout, "Res, %d, %d, %1.10f\n", D, L, ck_per_access);
 
-  // Liberamos memoria de ambos arrays dinamicos
-  _mm_free(index);
+  // Liberamos memoria
   _mm_free(A);
   
   // Imprimimos el vector de resultados para 

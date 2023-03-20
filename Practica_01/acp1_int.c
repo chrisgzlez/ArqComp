@@ -65,9 +65,9 @@ double mhz(int verbose, int sleeptime)
 
 int main(int argc, char **argv) {
   // Declaracion Variables
-  double    res=0, results[10];
+  int       res=0, results[10];
   double    t_ck, ck_per_access = 0; // Ciclos totales y por acceso
-  double    *A;
+  int       *A;
   int       *index;
   int       D, L;
   int       R;
@@ -80,8 +80,8 @@ int main(int argc, char **argv) {
   // Inicializamos Variables
   D = atoi(argv[1]);
   L = atoi(argv[2]);
-  R = D >= 64 / (sizeof (double)) ? L : (L-1) * (8/D) + 1;
-  A = (double*)_mm_malloc(R*D*sizeof(double), 64);
+  R = D >= 64 / (sizeof (int)) ? L : (L-1) * (16/D) + 1;
+  A = (int*)_mm_malloc(R*D*sizeof(int), 64);
   
 
   // Inicializacion del array de Indices de acceso a A 
@@ -92,7 +92,7 @@ int main(int argc, char **argv) {
 
   // Fase de Calentamiento: Inicializar A y cargar datos en cache
   for (int i = 0; i < R*D; i++) {
-    double temp = rand() % 200 / 100.;
+    int temp = rand() % 3;
     int sign = rand() % 2;
     temp  = temp < 1 ? (temp+1) : temp;
     if (sign) temp *= -1;
@@ -137,7 +137,7 @@ int main(int argc, char **argv) {
   // asegurarnos que el compilador no realiza ninguna 
   // optimizacion no deseada
   for (int i = 0; i < 10; i++) {
-    printf("%.2f ", results[i]);
+    printf("%d ", results[i]);
   }
   printf("\n");
   

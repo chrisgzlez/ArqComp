@@ -13,8 +13,10 @@
 # S2 = 1280 KiB / 80 MiB total cores con linea de 64 bytes
 #
 # R = Numero de elementos del array A (iteraciones) para leer L lineas cache
-# R = (Numero de Doubles por Linea / D)*L = ( (TamLinea / TamDouble) / D ) * L = ( 8 / D ) * L
-#  Si D >= 8; R = L (en cada iteracion leemos una liena nueva)
+# R = (Numero de Doubles por Linea / D)*(L-1) + 1
+# 	= ( (TamLinea / TamDouble) / D ) * (L-1) + 1
+# 	= ( 8 / D ) * (L-1) + 1
+#  	Si D >= 8; R = L (en cada iteracion leemos una linea nueva)
 # D = Separacion de elementos para observar el principio de localidad
 # L = numero de lineas cache diferentes. eg: L = 3; 3 lineas cache
 #
