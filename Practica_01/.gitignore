@@ -1,4 +1,5 @@
 acp1
 .*/
 cmake*/
+*.zip
 *.txt
