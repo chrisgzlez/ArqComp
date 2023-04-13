@@ -41,12 +41,12 @@ int main() {
             *(b + i) = rand()%200 / 100.;
         }
 
-        // Inicializamos d
-        *(d + i) = 0;
     }
 
+    
     // Creacion del array desordenado de indices
-    int aux[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    int aux[N];
+    for(int i = 0; i < N; i++) aux[i] = i;
     int i = 0;
     while (i < N) {
         int tmp = rand()%N;
@@ -57,6 +57,14 @@ int main() {
     }
     
     /** COMPUTACION **/
+
+    // Inicializamos d
+    for(int i = 0; i < N; i++) {
+        for(int j = 0; j < N; j++) {
+            *(d + i*N + j) = 0;
+        }
+    }
+
     // Operacion de computo de valores de d
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
@@ -106,3 +114,4 @@ void print_array(double* a, int n) {
     }
     printf("\n");
 }
+
