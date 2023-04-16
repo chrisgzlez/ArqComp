@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <time.h>
 #define N 10
+#define BSIZE 2
+// BSIZE TIENE QUE SER MODULO DE N
 
 void print_matrix(double* m, int r, int c);
 void print_array(double* m, int n);
@@ -58,35 +60,64 @@ int main() {
     /** COMPUTACION **/
     
     // Operacion de computo de valores de d
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            // TODO: comparar: guardando i*n + j en varible y sin ella
-            // Inicializamos d
-            *(d + i*N + j) = 0;
-            for (int k = 0; k < 8; k++) {
+    // TODO: PREGUNTAR JAVI SOBRE BLOCK TILING
+    // Y SI TRAER LINEA CACHE
+    for(int bj = 0; bj < N; bj += BSIZE) {
+        for (int i = 0; i < N; i++) {
+            for (int j = bj; j < (bj + BSIZE); j++) {
+                // TODO: comparar: guardando i*n + j en varible y sin ella
+                // Inicializamos d
+                *(d + i * N + j) = 0;
                 // Version 2: Intercambio de bucles
                 // Accedemos a los datos de forma lineal
                 // Ya lo haciamos en la Version 1
-                *(d + i*N + j) += 2 * a[i*8 + k] * b[k*N + j] - c[k];
+
+                // Version 2: Desenrollado de bucle k
+                *(d + i * N + j) += 2 * a[i * 8] * b[N + j] - c[0];
+                *(d + i * N + j) += 2 * a[i * 8 + 1] * b[1 * N + j] - c[1];
+                *(d + i * N + j) += 2 * a[i * 8 + 2] * b[2 * N + j] - c[2];
+                *(d + i * N + j) += 2 * a[i * 8 + 3] * b[3 * N + j] - c[3];
+                *(d + i * N + j) += 2 * a[i * 8 + 4] * b[4 * N + j] - c[4];
+                *(d + i * N + j) += 2 * a[i * 8 + 5] * b[5 * N + j] - c[5];
+                *(d + i * N + j) += 2 * a[i * 8 + 6] * b[6 * N + j] - c[6];
+                *(d + i * N + j) += 2 * a[i * 8 + 7] * b[7 * N + j] - c[7];
+
+                // Advantages of unroll the loop:
+                // - Less memory access
+                // - More data can be loaded into cache
+                // - Less time to load data
+                // - More data can be processed in one instruction
+                // - Less time to process data
+                // - Less time to jump from loop to loop
+                // - Less time to check loop condition
+                // - Less time to update loop counter
+                // - Less time to update loop bound
+                // - Less time to update loop variable
+
+                // Version 1: Bucle k
+                // for (int k = 0; k < 8; k++) {
+                //     *(d + i*N + j) += 2 * a[i*8 + k] * b[k*N + j] - c[k];
+                // }
             }
         }
-
-        // Version 2: Fusion de bucles
-        f += *(d + ind[i]*N + ind[i]) / 2;
     }
 
-    /**
-    * VERSION 1: 
+    // TODO: Preguntar si desenrollamos con tantos elementos para que ocupen una linea cache
+    // Y por consecuente usar _
     // Operacion de reducion de suma y compute de e
-        for (int i = 0; i < N; i++) {
-            // E es un array temporal
-            // Lo podemos substituir por un double temporal
-            // O prescindir de el
-            // Version 1: *(e + i) = *(d + ind[i]*N + ind[i]) / 2;
+    for (int i = 0; i < N; i+=4) {
+        // Version 2
+        // E es un array temporal
+        // Lo podemos substituir por un double temporal
+        // O prescindir de el
+        // Version 1: *(e + i) = *(d + ind[i]*N + ind[i]) / 2;
 
-            f += *(d + ind[i]*N + ind[i]) / 2;
-        }
-    */
+        f += *(d + ind[i]*N + ind[i]) / 2;
+        f += *(d + ind[i+1]*N + ind[i+1]) / 2;
+        f += *(d + ind[i+2]*N + ind[i+2]) / 2;
+        f += *(d + ind[i+3]*N + ind[i+3]) / 2;
+    }
+
     /** FIN COMPUTACION **/
 
     printf("\n-----------Matrix A------------\n");
