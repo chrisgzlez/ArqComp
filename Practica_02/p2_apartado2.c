@@ -2,7 +2,10 @@
 #include <stdio.h>
 #include <time.h>
 #define N 10
-#define BSIZE 2
+
+// Tamaño de Linea cache 64 KiB
+
+#define BSIZE 15
 // BSIZE TIENE QUE SER MODULO DE N
 
 void print_matrix(double* m, int r, int c);
@@ -18,6 +21,7 @@ int main() {
 
     // Inicializamos semilla de random con la hora del sistema
     srand(time(NULL));
+
     // Reservamos memoria para los punteros
     a = (double*)malloc(N * 8 * sizeof(double *));
     d = (double*)malloc(N * N * sizeof(double *));
@@ -62,42 +66,47 @@ int main() {
     // Operacion de computo de valores de d
     // TODO: PREGUNTAR JAVI SOBRE BLOCK TILING
     // Y SI TRAER LINEA CACHE
-    for(int bj = 0; bj < N; bj += BSIZE) {
-        for (int i = 0; i < N; i++) {
-            for (int j = bj; j < (bj + BSIZE); j++) {
-                // TODO: comparar: guardando i*n + j en varible y sin ella
-                // Inicializamos d
-                *(d + i * N + j) = 0;
-                // Version 2: Intercambio de bucles
-                // Accedemos a los datos de forma lineal
-                // Ya lo haciamos en la Version 1
+    for(int bi = 0; bi < N; bi += BSIZE) {
+        for (int bj = 0; bj < N; bj += BSIZE) {
+            // TODO: Calcular min(bi + BSIZE, N) y lo mismo para j
+            int min_i = (bi + BSIZE) < N ? (bi + BSIZE) : N;
+            int min_j = (bj + BSIZE) < N ? (bj + BSIZE) : N;
+            for (int i = 0; i < N; i++) {
+                for (int j = bj; j < (bj + BSIZE); j++) {
+                    // TODO: comparar: guardando i*n + j en varible y sin ella
+                    // Inicializamos d
+                    *(d + i * N + j) = 0;
+                    // Version 2: Intercambio de bucles
+                    // Accedemos a los datos de forma lineal
+                    // Ya lo haciamos en la Version 1
 
-                // Version 2: Desenrollado de bucle k
-                *(d + i * N + j) += 2 * a[i * 8] * b[N + j] - c[0];
-                *(d + i * N + j) += 2 * a[i * 8 + 1] * b[1 * N + j] - c[1];
-                *(d + i * N + j) += 2 * a[i * 8 + 2] * b[2 * N + j] - c[2];
-                *(d + i * N + j) += 2 * a[i * 8 + 3] * b[3 * N + j] - c[3];
-                *(d + i * N + j) += 2 * a[i * 8 + 4] * b[4 * N + j] - c[4];
-                *(d + i * N + j) += 2 * a[i * 8 + 5] * b[5 * N + j] - c[5];
-                *(d + i * N + j) += 2 * a[i * 8 + 6] * b[6 * N + j] - c[6];
-                *(d + i * N + j) += 2 * a[i * 8 + 7] * b[7 * N + j] - c[7];
+                    // Version 2: Desenrollado de bucle k
+                    *(d + i * N + j) += 2 * a[i * 8] * b[N + j] - c[0];
+                    *(d + i * N + j) += 2 * a[i * 8 + 1] * b[1 * N + j] - c[1];
+                    *(d + i * N + j) += 2 * a[i * 8 + 2] * b[2 * N + j] - c[2];
+                    *(d + i * N + j) += 2 * a[i * 8 + 3] * b[3 * N + j] - c[3];
+                    *(d + i * N + j) += 2 * a[i * 8 + 4] * b[4 * N + j] - c[4];
+                    *(d + i * N + j) += 2 * a[i * 8 + 5] * b[5 * N + j] - c[5];
+                    *(d + i * N + j) += 2 * a[i * 8 + 6] * b[6 * N + j] - c[6];
+                    *(d + i * N + j) += 2 * a[i * 8 + 7] * b[7 * N + j] - c[7];
 
-                // Advantages of unroll the loop:
-                // - Less memory access
-                // - More data can be loaded into cache
-                // - Less time to load data
-                // - More data can be processed in one instruction
-                // - Less time to process data
-                // - Less time to jump from loop to loop
-                // - Less time to check loop condition
-                // - Less time to update loop counter
-                // - Less time to update loop bound
-                // - Less time to update loop variable
+                    // Advantages of unroll the loop:
+                    // - Less memory access
+                    // - More data can be loaded into cache
+                    // - Less time to load data
+                    // - More data can be processed in one instruction
+                    // - Less time to process data
+                    // - Less time to jump from loop to loop
+                    // - Less time to check loop condition
+                    // - Less time to update loop counter
+                    // - Less time to update loop bound
+                    // - Less time to update loop variable
 
-                // Version 1: Bucle k
-                // for (int k = 0; k < 8; k++) {
-                //     *(d + i*N + j) += 2 * a[i*8 + k] * b[k*N + j] - c[k];
-                // }
+                    // Version 1: Bucle k
+                    // for (int k = 0; k < 8; k++) {
+                    //     *(d + i*N + j) += 2 * a[i*8 + k] * b[k*N + j] - c[k];
+                    // }
+                }
             }
         }
     }
@@ -105,7 +114,7 @@ int main() {
     // TODO: Preguntar si desenrollamos con tantos elementos para que ocupen una linea cache
     // Y por consecuente usar _
     // Operacion de reducion de suma y compute de e
-    for (int i = 0; i < N; i+=4) {
+    for (int i = 0; i < N - (N%4); i+=4) {
         // Version 2
         // E es un array temporal
         // Lo podemos substituir por un double temporal
@@ -118,22 +127,27 @@ int main() {
         f += *(d + ind[i+3]*N + ind[i+3]) / 2;
     }
 
+    for (int i = 0; i < (N%4); i++) {
+        f += *(d + ind[i]*N + ind[i]) / 2;
+    }
+
     /** FIN COMPUTACION **/
 
-    printf("\n-----------Matrix A------------\n");
-    print_matrix(a, N, 8);
+    // printf("\n-----------Matrix A------------\n");
+    // print_matrix(a, N, 8);
 
-    printf("\n-----------Matrix B------------\n");
-    print_matrix(b, 8, N);
-    
-    printf("\n-----------Matrix D------------\n");
-    print_matrix(d, N, N);
+    // printf("\n-----------Matrix B------------\n");
+    // print_matrix(b, 8, N);
+    //
+    // printf("\n-----------Matrix D------------\n");
+    // print_matrix(d, N, N);
 
 
-    printf("\n-----------Array E------------\n");
-    print_array(e, N);
+    // printf("\n-----------Array E------------\n");
+    // print_array(e, N);
 
-    printf("Este es el valor de f:%.2f\n", f);
+    printf("------------------------------\n");
+    printf("REDUCCION DE SUMA F: %.2f\n", f);
 }
 
 void print_matrix(double* m, int r, int c) {

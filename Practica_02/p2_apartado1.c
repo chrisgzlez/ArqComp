@@ -78,23 +78,21 @@ int main() {
     for (int i = 0; i < N; i++) {
         *(e + i) = *(d + ind[i]*N + ind[i]) / 2;
         f += e[i];
-        printf("Iter (%d): E -> %.2f F -> %.2f\n", i, e[i], f);
     }
 
-    printf("\n-----------Matrix A------------\n");
-    print_matrix(a, N, 8);
+    // printf("\n-----------Matrix A------------\n");
+    // print_matrix(a, N, 8);
 
-    printf("\n-----------Matrix B------------\n");
-    print_matrix(b, 8, N);
-    
-    printf("\n-----------Matrix D------------\n");
-    print_matrix(d, N, N);
+    // printf("\n-----------Matrix B------------\n");
+    // print_matrix(b, 8, N);
+    //
+    // printf("\n-----------Matrix D------------\n");
+    // print_matrix(d, N, N);
 
+    // printf("\n-----------Array E------------\n");
+    // print_array(e, N);
 
-    printf("\n-----------Array E------------\n");
-    print_array(e, N);
-
-    printf("\n------------------------------\n");
+    printf("------------------------------\n");
     printf("REDUCCION DE SUMA F: %.2f\n", f);
 }
 
