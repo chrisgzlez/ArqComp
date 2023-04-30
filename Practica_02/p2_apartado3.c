@@ -92,11 +92,11 @@ int main() {
 
     // Reservamos memoria para los punteros
     // De forma alineada a 32 bytes
-    a = (double*)aligned_alloc(32, N * 8 * sizeof(double *));
-    d = (double*)aligned_alloc(32, N * N * sizeof(double *));
-    b = (double*)aligned_alloc(32, 8 * N * sizeof(double *));
-    c = (double*)aligned_alloc(32, 8 * sizeof(double));
-    ind = (int*)aligned_alloc(32, N * sizeof(int));
+    a = (double*)aligned_alloc(64, N * 8 * sizeof(double *));
+    d = (double*)aligned_alloc(64, N * N * sizeof(double *));
+    b = (double*)aligned_alloc(64, 8 * N * sizeof(double *));
+    c = (double*)aligned_alloc(64, 8 * sizeof(double));
+    ind = (int*)aligned_alloc(64, N * sizeof(int));
 
     // Reserva de matrices y arrays
     // Inicializacion de matrices y arrays
@@ -165,7 +165,7 @@ int main() {
     printf("Aqui\n");
     __m512d c_vec = _mm512_load_pd(&c[0]);
     printf("Aqui\n");
-    
+
 
     for(int bi = 0; bi < N; bi += BSIZE) {
         for (int bj = 0; bj < N; bj += BSIZE) {
