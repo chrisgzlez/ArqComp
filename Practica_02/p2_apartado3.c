@@ -161,10 +161,7 @@ int main() {
 
 
     __m512d vec_2 = _mm512_set1_pd(2.0);
-
-    printf("Aqui\n");
     __m512d c_vec = _mm512_load_pd(&c[0]);
-    printf("Aqui\n");
 
     int count_i = 0, count_j = 0;
     for(int bi = 0; bi < N; bi += BSIZE) {
@@ -176,7 +173,6 @@ int main() {
             for (int i = 0; i < min_i; i++) {
                 for (int j = bj; j < min_j; j++) {
 
-                    printf("Iteracion: %3d, %3d\n", count_i, count_j);
                     // TODO: comparar: guardando i*n + j en varible y sin ella
 
 
@@ -218,11 +214,7 @@ int main() {
 
                     // Reduce sum of vectors
                     *(d + i * N + j) = reduce(res);
-
-                    count_j++;
                 }
-                count_i++;
-
             }
         }
     }
@@ -232,8 +224,6 @@ int main() {
     // Operacion de reducion de suma y compute de e
 
     for (int i = 0; i < N; i+=8) {
-        printf("Iteracion Final: %3d\n", i);
-
         // Calculamos la mascara
         int mask_size = N - i < 8 ? N - i : 8;
         int *mask_values = (int*) aligned_alloc(32, sizeof(int) * 8);
@@ -276,18 +266,12 @@ int main() {
     t_ck = get_counter();
 
 
-    // printf("\n-----------Matrix A------------\n");
-    // print_matrix(a, N, 8);
-
-    // printf("\n-----------Matrix B------------\n");
-    // print_matrix(b, 8, N);
-    //
-    // printf("\n-----------Matrix D------------\n");
-    // print_matrix(d, N, N);
-
-
-    // printf("\n-----------Array E------------\n");
-    // print_array(e, N);
+    printf("\n-----------Matrix A------------\n");
+    print_matrix(a, N, 8);
+    printf("\n-----------Matrix B------------\n");
+    print_matrix(b, 8, N);
+    printf("\n-----------Matrix D------------\n");
+    print_matrix(d, N, N);
 
     printf("------------------------------\n");
     printf("REDUCCION DE SUMA F: %.2f\n", f);
