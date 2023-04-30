@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#define N 20
+#define N 10
 #define SEMILLA 19
 
 // Tamaño de cache de L1 48 kiB -- Entran 768 doubles
@@ -166,7 +166,7 @@ int main() {
     __m512d c_vec = _mm512_load_pd(&c[0]);
     printf("Aqui\n");
 
-
+    int count_i = 0, count_j = 0;
     for(int bi = 0; bi < N; bi += BSIZE) {
         for (int bj = 0; bj < N; bj += BSIZE) {
             // TODO: Calcular min(bi + BSIZE, N) y lo mismo para j
@@ -176,7 +176,7 @@ int main() {
             for (int i = 0; i < min_i; i++) {
                 for (int j = bj; j < min_j; j++) {
 
-                    printf("Iteracion (i, j): %3d, %3d\n", i, j);
+                    printf("Iteracion: %3d, %3d\n", count_i, count_j);
                     // TODO: comparar: guardando i*n + j en varible y sin ella
 
 
@@ -218,7 +218,11 @@ int main() {
 
                     // Reduce sum of vectors
                     *(d + i * N + j) = reduce(res);
+
+                    count_j++;
                 }
+                count_i++;
+
             }
         }
     }
