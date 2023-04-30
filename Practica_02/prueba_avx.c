@@ -46,12 +46,6 @@ int main(int argc, char** argv) {
     // Load according to mask
     __m256i result2 = _mm256_maskload_epi32(array, mask);
 
-    // Display array
-    int* i = (int*)&result2;
-    for (int j = 0; j < 8; j++) {
-        printf("%d ", i[j]);
-    }
-
 
 
     __m256i a = _mm256_setr_epi32(1, 2, 3, 4, 5, 6, 7, 8);
@@ -81,6 +75,22 @@ int main(int argc, char** argv) {
         printf("%d ", i2[j]);
     }
 
+
+    double *aaa = (double*) aligned_alloc(32, 4 * sizeof(double));
+
+    for (int i = 0; i < 4; i++) {
+        aaa[i] = i;
+    }
+
+    __m256d aa_vec = _mm256_load_pd(aaa);
+
+    // display
+    printf("\nD: ");
+    double* d = (double*)&aa_vec;
+    for (int i = 0; i < 4; i++) {
+        printf("%f ", d[i]);
+    }
+    printf("\n");
 
 
     // Vectores de 8 doubles: 8 * 8 = 64 bytes
