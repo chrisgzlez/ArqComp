@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#define N 10
+#define N 20
+#define SEMILLA 19
 
 // Tamaño de cache de L1 48 kiB -- Entran 768 doubles
 // Tamaño de cache de L2 1280 KiB
@@ -13,6 +14,19 @@
 
 void print_matrix(double* m, int r, int c);
 void print_array(double* m, int n);
+
+// Function to reduce a __m512d vector to a double value
+double reduce(__m512d input) {
+
+    __m256d vlow  = _mm512_castpd512_pd256(input);
+    __m256d vhigh = _mm512_extractf64x4_pd(input,1);
+
+    __m256d suma0 = _mm256_hadd_pd(vlow, vlow);
+    __m256d suma1 = _mm256_hadd_pd(vhigh, vhigh);
+
+    return ((double*)&suma0)[0] + ((double*)&suma0)[2] + ((double*)&suma1)[0] + ((double*)&suma1)[2];
+}
+
 
 void start_counter();
 double get_counter();
@@ -74,15 +88,16 @@ int main() {
 
 
     // Inicializamos semilla de random con la hora del sistema
-    srand(time(NULL));
+    srand(SEMILLA);
 
     // Reservamos memoria para los punteros
-    a = (double*)malloc(N * 8 * sizeof(double *));
-    d = (double*)malloc(N * N * sizeof(double *));
-    b = (double*)malloc(8 * N * sizeof(double *));
-    c = (double*)malloc(8 * sizeof(double));
-    e = (double*)malloc(N * sizeof(double));
-    ind = (int*)malloc(N * sizeof(int));
+    // De forma alineada a 32 bytes
+    a = (double*)aligned_alloc(32, N * 8 * sizeof(double *));
+    d = (double*)aligned_alloc(32, N * N * sizeof(double *));
+    b = (double*)aligned_alloc(32, 8 * N * sizeof(double *));
+    c = (double*)aligned_alloc(32, 8 * sizeof(double));
+    e = (double*)aligned_alloc(32, N * sizeof(double));
+    ind = (int*)aligned_alloc(32, N * sizeof(int));
 
     // Reserva de matrices y arrays
     // Inicializacion de matrices y arrays
@@ -142,7 +157,9 @@ int main() {
     // TODO: Revisar las condiciones de parada
 
     // Cargamos el vector c ya que es constante
+    // Y tiene tamaño 8
     __m512d c_vec = _mm512_load_pd(c);
+    __m512d vec_2 = _mm512_set1_pd(2.0);
 
     for(int bi = 0; bi < N; bi += BSIZE) {
         for (int bj = 0; bj < N; bj += BSIZE) {
@@ -152,26 +169,50 @@ int main() {
 
             for (int i = 0; i < min_i; i++) {
                 for (int j = bj; j < min_j; j++) {
+
+
                     // TODO: comparar: guardando i*n + j en varible y sin ella
 
                     // Inicializamos d
                     *(d + i * N + j) = 0;
+
+
+
                     // Version 3: VECTORIZACION
                     // Cargamos contenidos de los arrays a,b,c en vectores
                     // Son de tipo double (64 bits) en cada vector entran 8 doubles
                     __m512d a_vec, b_vec;
 
-                    *(d + i * N + j) += 2 * a[i * 8] * b[N + j] - c[0];
+                    // Cargamos 8 doubles en el vector a_vec
+                    // Cargamos los datos de la fila i de la matriz a (N x 8)
+                    // esto quiere decir que tenemos que cargar
+                    // a[0][j], a[1][j], a[2][j], a[3][j], a[4][j], a[5][j], a[6][j], a[7][j]
+                    // donde la fila se calcula como: i*8
+                    a_vec = _mm512_load_pd(a + i * 8);
+
+                    // Cargamos 8 doubles en el vector b_vec
+                    // Cargamos los datos de la columna j de la matriz b (8 x N)
+                    // esto quiere decir que tenemos que cargar
+                    // b[0][j], b[1][j], b[2][j], b[3][j], b[4][j], b[5][j], b[6][j], b[7][j]
+                    // donde la fila se calcula como: i*N
+
+                    // Calculamos el vector de posiciones de b
+                    __m256i b_positions = _mm256_set1_epi32(N);
+                    b_positions = _mm256_mullo_epi32(b_positions, _mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7));
+                    b_positions = _mm256_add_epi32(b_positions, _mm256_set1_epi32(j));
 
 
-                    *(d + i * N + j) += 2 * a[i * 8 + 1] * b[1 * N + j] - c[1];
-                    *(d + i * N + j) += 2 * a[i * 8 + 2] * b[2 * N + j] - c[2];
-                    *(d + i * N + j) += 2 * a[i * 8 + 3] * b[3 * N + j] - c[3];
-                    *(d + i * N + j) += 2 * a[i * 8 + 4] * b[4 * N + j] - c[4];
-                    *(d + i * N + j) += 2 * a[i * 8 + 5] * b[5 * N + j] - c[5];
-                    *(d + i * N + j) += 2 * a[i * 8 + 6] * b[6 * N + j] - c[6];
-                    *(d + i * N + j) += 2 * a[i * 8 + 7] * b[7 * N + j] - c[7];
+                    b_vec = _mm512_i32gather_pd(b_positions, b, 8);
 
+
+                    // Multiplicamos los vectores a_vec y (b_vec - c_vec)
+                    __m512d mult = _mm512_mul_pd(a_vec, _mm512_sub_pd(b_vec, c_vec));
+
+                    // Multiplicamos el resultado anterior por 2 y le restamos c_vec
+                    __m512 res = _mm512_mul_pd(vec_2, mult);
+
+                    // Reduce sum of vectors
+                    *(d + i * N + j) = reduce(res);
                 }
             }
         }
@@ -180,21 +221,42 @@ int main() {
     // TODO: Preguntar si desenrollamos con tantos elementos para que ocupen una linea cache
     // Y por consecuente usar _
     // Operacion de reducion de suma y compute de e
-    for (int i = 0; i < N - (N%4); i+=4) {
+
+    int end = N - (N%16);
+    for (int i = 0; i < N; i+=8) {
+
+        // Calculamos la mascara
+        int mask_size = N - i < 8 ? N - i : 8;
+        int mask_values[8];
+
+        for (int j = 0; j < mask_size; j++) {
+            mask_values[j] = 0;
+        }
+
+        // Initialize mask vector
+        __m256i mask = _mm256_load_epi32(mask_values);
+
         // Version 2
         // E es un array temporal
         // Lo podemos substituir por un double temporal
         // O prescindir de el
         // Version 1: *(e + i) = *(d + ind[i]*N + ind[i]) / 2;
 
-        f += *(d + ind[i]*N + ind[i]) / 2;
-        f += *(d + ind[i+1]*N + ind[i+1]) / 2;
-        f += *(d + ind[i+2]*N + ind[i+2]) / 2;
-        f += *(d + ind[i+3]*N + ind[i+3]) / 2;
-    }
+        // Obtener los indices: ind[i]*N + ind[i]
+        // Indice de las columnas de la matriz d
+        __m256i ind_col = _mm256_maskload_epi32(ind, mask);
 
-    for (int i = 0; i < (N%4); i++) {
-        f += *(d + ind[i]*N + ind[i]) / 2;
+        __m256i ind_rows = _mm256_mullo_epi32(ind_col, _mm256_set1_epi32(N));
+
+        __m256i ind_vec = _mm256_add_epi32(ind_rows, ind_col);
+
+        // Cargamos los valores de d en un vector
+        __m512d d_vec = _mm512_i32gather_pd(ind_vec, d, 8);
+
+        // Dividimos por 2
+        __m512d res = _mm512_div_pd(d_vec, _mm512_set1_pd(2.0));
+
+        f += reduce(res);
     }
 
     /** FIN COMPUTACION **/
