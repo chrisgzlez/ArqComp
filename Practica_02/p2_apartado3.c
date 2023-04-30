@@ -155,6 +155,7 @@ int main() {
     // Operacion de computo de valores de d
     // TODO: Revisar las condiciones de parada
 
+    printf("Hola\n"),
     // Cargamos el vector c ya que es constante
     // Y tiene tamaño 8
     __m512d c_vec = _mm512_load_pd(c);
