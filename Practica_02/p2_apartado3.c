@@ -232,6 +232,7 @@ int main() {
     // Operacion de reducion de suma y compute de e
 
     for (int i = 0; i < N; i+=8) {
+        printf("Iteracion Final: %3d\n", i);
 
         // Calculamos la mascara
         int mask_size = N - i < 8 ? N - i : 8;
