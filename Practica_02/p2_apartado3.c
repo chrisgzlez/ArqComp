@@ -245,6 +245,8 @@ int main() {
         // Indice de las columnas de la matriz d
         __m256i ind_col = _mm256_maskload_epi32(ind, mask);
 
+        // TODO: IMPRIMER INDICES DE COLUMNAS, ROWS... EL ERROR DE CALCULO ESTA AQUI
+
         __m256i ind_rows = _mm256_mullo_epi32(ind_col, _mm256_set1_epi32(N));
 
         __m256i ind_vec = _mm256_add_epi32(ind_rows, ind_col);
@@ -253,10 +255,11 @@ int main() {
         __m512d d_vec = _mm512_i32gather_pd(ind_vec, d, 8);
 
         // Dividimos por 2
-        __m512d res = _mm512_div_pd(d_vec, _mm512_set1_pd(2.0));
+        //__m512d res = _mm512_div_pd(d_vec, _mm512_set1_pd(2.0));
 
-        f += reduce(res);
+        f += reduce(d_vec);
     }
+    f /= 2;
 
     /** FIN COMPUTACION **/
 
