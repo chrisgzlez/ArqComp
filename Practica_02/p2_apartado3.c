@@ -169,26 +169,23 @@ int main() {
 
             for (int i = 0; i < min_i; i++) {
                 for (int j = bj; j < min_j; j++) {
-
-
                     // TODO: comparar: guardando i*n + j en varible y sin ella
+
 
                     // Inicializamos d
                     *(d + i * N + j) = 0;
 
 
-
                     // Version 3: VECTORIZACION
                     // Cargamos contenidos de los arrays a,b,c en vectores
                     // Son de tipo double (64 bits) en cada vector entran 8 doubles
-                    __m512d a_vec, b_vec;
 
                     // Cargamos 8 doubles en el vector a_vec
                     // Cargamos los datos de la fila i de la matriz a (N x 8)
                     // esto quiere decir que tenemos que cargar
                     // a[0][j], a[1][j], a[2][j], a[3][j], a[4][j], a[5][j], a[6][j], a[7][j]
                     // donde la fila se calcula como: i*8
-                    a_vec = _mm512_load_pd(a + i * 8);
+                    __m512 a_vec = _mm512_load_pd(a + i * 8);
 
                     // Cargamos 8 doubles en el vector b_vec
                     // Cargamos los datos de la columna j de la matriz b (8 x N)
@@ -202,7 +199,7 @@ int main() {
                     b_positions = _mm256_add_epi32(b_positions, _mm256_set1_epi32(j));
 
 
-                    b_vec = _mm512_i32gather_pd(b_positions, b, 8);
+                    __m512 b_vec = _mm512_i32gather_pd(b_positions, b, 8);
 
 
                     // Multiplicamos los vectores a_vec y (b_vec - c_vec)
@@ -222,7 +219,6 @@ int main() {
     // Y por consecuente usar _
     // Operacion de reducion de suma y compute de e
 
-    int end = N - (N%16);
     for (int i = 0; i < N; i+=8) {
 
         // Calculamos la mascara
