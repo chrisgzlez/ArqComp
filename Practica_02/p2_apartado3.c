@@ -158,7 +158,10 @@ int main() {
     // Cargamos el vector c ya que es constante
     // Y tiene tamaño 8
     __m512d c_vec = _mm512_load_pd(c);
+
+    printf("Aqui\n");
     __m512d vec_2 = _mm512_set1_pd(2.0);
+    printf("Aqui\n");
 
     for(int bi = 0; bi < N; bi += BSIZE) {
         for (int bj = 0; bj < N; bj += BSIZE) {
