@@ -209,7 +209,7 @@ int main() {
                     __m512d mult = _mm512_mul_pd(a_vec, _mm512_sub_pd(b_vec, c_vec));
 
                     // Multiplicamos el resultado anterior por 2 y le restamos c_vec
-                    __m512 res = _mm512_mul_pd(vec_2, mult);
+                    __m512d res = _mm512_mul_pd(vec_2, mult);
 
                     // Reduce sum of vectors
                     *(d + i * N + j) = reduce(res);
