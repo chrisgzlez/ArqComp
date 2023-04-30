@@ -81,10 +81,10 @@ int main() {
 
     double  *d;             // Matriz inicializada a 0
     double  *a, *b;         // Matrices que almacenan valores aleatorios
-    double  *c, *e;         // Arrays
+    double  *c;         // Arrays
     int     *ind;           // Array desordenado aleatoriamente con valores de fila/columna sin repetirse
     double  f = 0;          // Variable de salida de la suma
-    double    t_ck, ck_per_access = 0; // Ciclos totales y por acceso
+    double    t_ck; // Ciclos totales y por acceso
 
 
     // Inicializamos semilla de random con la hora del sistema
@@ -96,7 +96,6 @@ int main() {
     d = (double*)aligned_alloc(32, N * N * sizeof(double *));
     b = (double*)aligned_alloc(32, 8 * N * sizeof(double *));
     c = (double*)aligned_alloc(32, 8 * sizeof(double));
-    e = (double*)aligned_alloc(32, N * sizeof(double));
     ind = (int*)aligned_alloc(32, N * sizeof(int));
 
     // Reserva de matrices y arrays
@@ -185,7 +184,7 @@ int main() {
                     // esto quiere decir que tenemos que cargar
                     // a[0][j], a[1][j], a[2][j], a[3][j], a[4][j], a[5][j], a[6][j], a[7][j]
                     // donde la fila se calcula como: i*8
-                    __m512 a_vec = _mm512_load_pd(a + i * 8);
+                    __m512d a_vec = _mm512_load_pd(a + i * 8);
 
                     // Cargamos 8 doubles en el vector b_vec
                     // Cargamos los datos de la columna j de la matriz b (8 x N)
@@ -199,7 +198,7 @@ int main() {
                     b_positions = _mm256_add_epi32(b_positions, _mm256_set1_epi32(j));
 
 
-                    __m512 b_vec = _mm512_i32gather_pd(b_positions, b, 8);
+                    __m512d b_vec = _mm512_i32gather_pd(b_positions, b, 8);
 
 
                     // Multiplicamos los vectores a_vec y (b_vec - c_vec)
@@ -230,7 +229,7 @@ int main() {
         }
 
         // Initialize mask vector
-        __m256i mask = _mm256_load_epi32(mask_values);
+        __m256i mask = _mm256_load_si256((__m256i *)mask_values);
 
         // Version 2
         // E es un array temporal
