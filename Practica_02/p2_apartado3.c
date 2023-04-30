@@ -168,6 +168,8 @@ int main() {
 
             for (int i = 0; i < min_i; i++) {
                 for (int j = bj; j < min_j; j++) {
+
+                    printf("Iteracion (i, j): %3d, %3d\n", i, j);
                     // TODO: comparar: guardando i*n + j en varible y sin ella
 
 
