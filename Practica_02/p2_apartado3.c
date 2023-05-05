@@ -271,6 +271,11 @@ int main() {
 
         f += reduce(d_vec);
 
+        printf("mask_values:");
+        for (int pi = 0; pi < 8; pi++) {
+            printf("%d ", mask_values[pi]);
+        }
+
         printf("mask: ");
         for (int pi = 0; pi < 8; pi++) {
             printf("%d ", mascara[i]);
