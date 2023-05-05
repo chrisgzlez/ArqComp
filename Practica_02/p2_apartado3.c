@@ -257,7 +257,7 @@ int main() {
         __m256i ind_vec = _mm256_add_epi32(ind_rows, ind_col);
 
         // Cargamos los valores de d en un vector
-        __m512d d_vec = _mm512_i32gather_pd(ind_vec, d, 8);
+        __m512d d_vec = _mm512_i32gather_pd(ind_vec, d, 4);
 
 
         int * mascara = (int*) &mask;
