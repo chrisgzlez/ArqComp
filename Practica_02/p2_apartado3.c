@@ -231,8 +231,8 @@ int main() {
         int mask_size = N - i < 8 ? N - i : 8;
         int *mask_values = (int*) aligned_alloc(32, sizeof(int) * 8);
 
-        for (int j = 0; j < mask_size; j++) {
-            mask_values[j] = 0;
+        for (int j = 0; j < 8; j++) {
+            mask_values[j] = j < mask_size ? -1 : 0;
         }
 
         // Initialize mask vector
