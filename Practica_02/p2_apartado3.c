@@ -258,6 +258,7 @@ int main() {
         __m512d d_vec = _mm512_i32gather_pd(ind_vec, d, 8);
 
 
+        int * mascara = (int*) &mask;
         int * ind_col_p = (int*) &ind_col;
         int * ind_rows_p = (int*) &ind_rows;
         int * ind_vec_p = (int*) &ind_vec;
@@ -267,7 +268,12 @@ int main() {
 
         f += reduce(d_vec);
 
-        printf("ind_col: ");
+        printf("mask: ");
+        for (int pi = 0; pi < 8; pi++) {
+            printf("%d ", mascara[i]);
+        }
+
+        printf("\nind_col: ");
         for (int pi = 0; pi < 8; pi++) {
             printf("%d ", ind_col_p[i]);
         }
@@ -286,7 +292,7 @@ int main() {
         for (int pi = 0; pi < 8; pi++) {
             printf("%.3f ", d_vec_p[i]);
         }
-        printf("\nF: %.3f\n", f);
+        printf("\nF: %.3f\n\n", f);
     }
     f /= 2;
 
