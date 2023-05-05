@@ -113,7 +113,7 @@ int main() {
     }
 
     printf("ind: ");
-    for (int pi = 0; pi < 8; pi++) {
+    for (int pi = 0; pi < N; pi++) {
         printf("%d ", ind[pi]);
     }
     

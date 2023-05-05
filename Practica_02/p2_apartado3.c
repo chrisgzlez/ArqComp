@@ -128,7 +128,7 @@ int main() {
         }
     }
     printf("ind: ");
-    for (int pi = 0; pi < 8; pi++) {
+    for (int pi = 0; pi < N; pi++) {
         printf("%d ", ind[pi]);
     }
 
@@ -234,7 +234,7 @@ int main() {
         for (int j = 0; j < 8; j++) {
             mask_values[j] = j < mask_size ? -1 : 0;
         }
-        
+
         __m256i mask = _mm256_setr_epi32(
                 mask_values[0], mask_values[1], mask_values[2], mask_values[3],
                 mask_values[4], mask_values[5], mask_values[6], mask_values[7]
@@ -248,7 +248,7 @@ int main() {
 
         // Obtener los indices: ind[i]*N + ind[i]
         // Indice de las columnas de la matriz d
-        __m256i ind_col = _mm256_maskload_epi32(ind, mask);
+        __m256i ind_col = _mm256_maskload_epi32(ind+i, mask);
 
         // TODO: IMPRIMER INDICES DE COLUMNAS, ROWS... EL ERROR DE CALCULO ESTA AQUI
 
