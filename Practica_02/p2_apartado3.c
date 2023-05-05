@@ -127,6 +127,12 @@ int main() {
             aux[tmp] = -1;
         }
     }
+    printf("ind: ");
+    for (int pi = 0; pi < 8; pi++) {
+        printf("%d ", ind[pi]);
+    }
+
+    printf("\n\n");
 
     /** COMPUTACION **/
     start_counter();
