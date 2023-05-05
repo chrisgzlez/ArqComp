@@ -225,21 +225,8 @@ int main() {
     // TODO: Preguntar si desenrollamos con tantos elementos para que ocupen una linea cache
     // Y por consecuente usar _
     // Operacion de reducion de suma y compute de e
-
-    for (int i = 0; i < N; i+=8) {
-        // Calculamos la mascara
-        int mask_size = N - i < 8 ? N - i : 8;
-        int *mask_values = (int*) aligned_alloc(32, sizeof(int) * 8);
-
-        for (int j = 0; j < 8; j++) {
-            mask_values[j] = j < mask_size ? -1 : 0;
-        }
-
-        __m256i mask = _mm256_setr_epi32(
-                mask_values[0], mask_values[1], mask_values[2], mask_values[3],
-                mask_values[4], mask_values[5], mask_values[6], mask_values[7]
-                );
-
+    int end = N - (N%8);
+    for (int i = 0; i < end; i+=8) {
         // Version 2
         // E es un array temporal
         // Lo podemos substituir por un double temporal
@@ -248,7 +235,7 @@ int main() {
 
         // Obtener los indices: ind[i]*N + ind[i]
         // Indice de las columnas de la matriz d
-        __m256i ind_col = _mm256_maskload_epi32(ind+i, mask);
+        __m256i ind_col = _mm256_load_epi32(ind+i);
 
         // TODO: IMPRIMER INDICES DE COLUMNAS, ROWS... EL ERROR DE CALCULO ESTA AQUI
 
@@ -257,49 +244,15 @@ int main() {
         __m256i ind_vec = _mm256_add_epi32(ind_rows, ind_col);
 
         // Cargamos los valores de d en un vector
-        __m512d d_vec = _mm512_i32gather_pd(ind_vec, d, 4);
+        __m512d d_vec = _mm512_i32gather_pd(ind_vec, d, 8);
 
-
-        int * mascara = (int*) &mask;
-        int * ind_col_p = (int*) &ind_col;
-        int * ind_rows_p = (int*) &ind_rows;
-        int * ind_vec_p = (int*) &ind_vec;
-        double * d_vec_p = (double*) &d_vec;
-        // Dividimos por 2
-        //__m512d res = _mm512_div_pd(d_vec, _mm512_set1_pd(2.0));
 
         f += reduce(d_vec);
+    }
 
-        printf("mask_values:");
-        for (int pi = 0; pi < 8; pi++) {
-            printf("%d ", mask_values[pi]);
-        }
-
-        printf("mask: ");
-        for (int pi = 0; pi < 8; pi++) {
-            printf("%d ", mascara[pi]);
-        }
-
-        printf("\nind_col: ");
-        for (int pi = 0; pi < 8; pi++) {
-            printf("%d ", ind_col_p[pi]);
-        }
-
-        printf("\nind_rows: ");
-        for (int pi = 0; pi < 8; pi++) {
-            printf("%d ", ind_rows_p[pi]);
-        }
-
-        printf("\nind_vec: ");
-        for (int pi = 0; pi < 8; pi++) {
-            printf("%d ", ind_vec_p[pi]);
-        }
-
-        printf("\nd_vec: ");
-        for (int pi = 0; pi < 8; pi++) {
-            printf("%.3f ", d_vec_p[pi]);
-        }
-        printf("\nF: %.3f\n\n", f);
+    // Los que quedan calcularlos de forma secuencial
+    for (int i = end; i < N; i++) {
+        f += *(d + ind[i]*N + ind[i]);
     }
     f /= 2;
 
