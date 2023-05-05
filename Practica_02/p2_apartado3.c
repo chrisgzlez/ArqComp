@@ -236,10 +236,12 @@ int main() {
         }
 
         // Initialize mask vector
-        __m256i mask = _mm256_setr_epi32(
-                mask_values[0], mask_values[1], mask_values[2], mask_values[3],
-                mask_values[4], mask_values[5], mask_values[6], mask_values[7]
-                );
+        __m256i mask = _mm256_setr_epi32(-1, -1, -1, -1, 0, 0, 0, 0);
+
+        // __m256i mask = _mm256_setr_epi32(
+        //         mask_values[0], mask_values[1], mask_values[2], mask_values[3],
+        //         mask_values[4], mask_values[5], mask_values[6], mask_values[7]
+        //         );
 
         // Version 2
         // E es un array temporal

@@ -47,6 +47,14 @@ int main(int argc, char** argv) {
     __m256i result2 = _mm256_maskload_epi32(array, mask);
 
 
+    // Display
+    int* i9 = (int*)&result2;
+    printf("\nresult2: ");
+    for (int j = 0; j < 8; j++) {
+        printf("%d ", i9[j]);
+    }
+    printf("\n");
+
 
     __m256i a = _mm256_setr_epi32(1, 2, 3, 4, 5, 6, 7, 8);
     __m256i b = _mm256_setr_epi32(1, 2, 3, 4, 5, 6, 7, 8);
