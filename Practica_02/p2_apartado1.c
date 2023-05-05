@@ -142,14 +142,14 @@ int main(int argc, char** argv) {
     n_ck = get_counter();
 
     // Prints debugging
-    printf("\n-----------Matrix A------------\n");
-    print_matrix(a, N, 8);
-    printf("\n-----------Matrix B------------\n");
-    print_matrix(b, 8, N);
-    printf("\n-----------Matrix D------------\n");
-    print_matrix(d, N, N);
-    printf("\n-----------Array E------------\n");
-    print_array(e, N);
+    // printf("\n-----------Matrix A------------\n");
+    // print_matrix(a, N, 8);
+    // printf("\n-----------Matrix B------------\n");
+    // print_matrix(b, 8, N);
+    // printf("\n-----------Matrix D------------\n");
+    // print_matrix(d, N, N);
+    // printf("\n-----------Array E------------\n");
+    // print_array(e, N);
 
     printf("------------------------------\n");
     printf("REDUCCION DE SUMA F: %.2f\n", f);

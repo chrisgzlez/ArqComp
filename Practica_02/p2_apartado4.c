@@ -84,9 +84,9 @@ int main(int argc, char** argv) {
     }
 
     // Reservamos memoria para los punteros
-    a = (double*)malloc(N * 8 * sizeof(double *));
-    d = (double*)malloc(N * N * sizeof(double *));
-    b = (double*)malloc(8 * N * sizeof(double *));
+    a = (double*)malloc(N * 8 * sizeof(double));
+    d = (double*)malloc(N * N * sizeof(double));
+    b = (double*)malloc(8 * N * sizeof(double));
     c = (double*)malloc(8 * sizeof(double));
     ind = (int*)malloc(N * sizeof(int));
 
@@ -128,40 +128,34 @@ int main(int argc, char** argv) {
     /// PARALELIZACION
     // Publicas: a, b, c, d, f y ind
     // Privadas: bi, bj, i, j
-    #pragma omp parallel num_threads(C)
-    {
-        printf("THREAD %d BEFORE FOR\n", omp_get_thread_num());
-        // TODO: Probar con dynamic, guided and auto
-        // TODO: Probar con collpase (sin BSIZE fors) vs no-collapse
-        #pragma omp for schedule(static, 1)
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                printf("thread %d iter %d %d\n", omp_get_thread_num(), i, j);
-                // TODO: comparar: guardando i*n + j en varible y sin ella
-                // Inicializamos d
-                *(d + i * N + j) = 0;
 
-                // Version 2: Desenrollado de bucle k
-                *(d + i * N + j) += 2 * a[i * 8 + 0] * (b[0 * N + j] - c[0]);
-                *(d + i * N + j) += 2 * a[i * 8 + 1] * (b[1 * N + j] - c[1]);
-                *(d + i * N + j) += 2 * a[i * 8 + 2] * (b[2 * N + j] - c[2]);
-                *(d + i * N + j) += 2 * a[i * 8 + 3] * (b[3 * N + j] - c[3]);
-                *(d + i * N + j) += 2 * a[i * 8 + 4] * (b[4 * N + j] - c[4]);
-                *(d + i * N + j) += 2 * a[i * 8 + 5] * (b[5 * N + j] - c[5]);
-                *(d + i * N + j) += 2 * a[i * 8 + 6] * (b[6 * N + j] - c[6]);
-                *(d + i * N + j) += 2 * a[i * 8 + 7] * (b[7 * N + j] - c[7]);
-            }
+    // TODO: Probar con dynamic, guided and auto
+    // TODO: Probar con collpase (sin BSIZE fors) vs no-collapse
+    #pragma omp parallel for schedule(static, 1) num_threads(C)
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            // TODO: comparar: guardando i*n + j en varible y sin ella
+            // Inicializamos d
+            *(d + i * N + j) = 0;
+
+            // Version 2: Desenrollado de bucle k
+            *(d + i * N + j) += 2 * a[i * 8 + 0] * (b[0 * N + j] - c[0]);
+            *(d + i * N + j) += 2 * a[i * 8 + 1] * (b[1 * N + j] - c[1]);
+            *(d + i * N + j) += 2 * a[i * 8 + 2] * (b[2 * N + j] - c[2]);
+            *(d + i * N + j) += 2 * a[i * 8 + 3] * (b[3 * N + j] - c[3]);
+            *(d + i * N + j) += 2 * a[i * 8 + 4] * (b[4 * N + j] - c[4]);
+            *(d + i * N + j) += 2 * a[i * 8 + 5] * (b[5 * N + j] - c[5]);
+            *(d + i * N + j) += 2 * a[i * 8 + 6] * (b[6 * N + j] - c[6]);
+            *(d + i * N + j) += 2 * a[i * 8 + 7] * (b[7 * N + j] - c[7]);
         }
     }
 
     // MAIN THREAD
     int end = N - (N%8);
-    printf("THREAD %d AFTER FOR\n", omp_get_thread_num());
 
     // PARALELIZACION
-    #pragma omp parallel for schedule(static, 8)
+    #pragma omp parallel for schedule(static, 1) num_threads(C)
     for (int i = 0; i < end; i+=8) {
-        printf("thread %d iter %d\n", omp_get_thread_num(), i);
         f += *(d + ind[i+0]*N + ind[i+0]) / 2;
         f += *(d + ind[i+1]*N + ind[i+1]) / 2;
         f += *(d + ind[i+2]*N + ind[i+2]) / 2;
