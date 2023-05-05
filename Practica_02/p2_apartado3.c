@@ -76,15 +76,14 @@ double get_counter()
 }
 
 
-
 int main() {
 
     double  *d;             // Matriz inicializada a 0
     double  *a, *b;         // Matrices que almacenan valores aleatorios
-    double  *c;         // Arrays
+    double  *c;             // Arrays
     int     *ind;           // Array desordenado aleatoriamente con valores de fila/columna sin repetirse
     double  f = 0;          // Variable de salida de la suma
-    double    t_ck; // Ciclos totales y por acceso
+    double    n_ck;         // Ciclos totales y por acceso
 
 
     // Inicializamos semilla de random con la hora del sistema
@@ -155,7 +154,6 @@ int main() {
     // Operacion de computo de valores de d
     // TODO: Revisar las condiciones de parada
 
-    printf("Hola\n");
     // Cargamos el vector c ya que es constante
     // Y tiene tamaño 8
 
@@ -163,7 +161,6 @@ int main() {
     __m512d vec_2 = _mm512_set1_pd(2.0);
     __m512d c_vec = _mm512_load_pd(&c[0]);
 
-    int count_i = 0, count_j = 0;
     for(int bi = 0; bi < N; bi += BSIZE) {
         for (int bj = 0; bj < N; bj += BSIZE) {
             // TODO: Calcular min(bi + BSIZE, N) y lo mismo para j
@@ -254,10 +251,36 @@ int main() {
         // Cargamos los valores de d en un vector
         __m512d d_vec = _mm512_i32gather_pd(ind_vec, d, 8);
 
+
+        int * ind_col_p = (int*) &ind_col;
+        int * ind_rows_p = (int*) &ind_rows;
+        int * ind_vec_p = (int*) &ind_vec;
+        double * d_vec_p = (double*) &d_vec;
         // Dividimos por 2
         //__m512d res = _mm512_div_pd(d_vec, _mm512_set1_pd(2.0));
 
         f += reduce(d_vec);
+
+        printf("ind_col: ");
+        for (int pi = 0; pi < 8; pi++) {
+            printf("%d ", ind_col_p[i]);
+        }
+
+        printf("\nind_rows: ");
+        for (int pi = 0; pi < 8; pi++) {
+            printf("%d ", ind_rows_p[i]);
+        }
+
+        printf("\nind_vec: ");
+        for (int pi = 0; pi < 8; pi++) {
+            printf("%d ", ind_vec_p[i]);
+        }
+
+        printf("\nd_vec: ");
+        for (int pi = 0; pi < 8; pi++) {
+            printf("%.3f ", d_vec_p[i]);
+        }
+        printf("\nF: %.3f\n", f);
     }
     f /= 2;
 
@@ -266,7 +289,7 @@ int main() {
 
     // Obtenemos el numero de ciclos totales que tardaron
     // las 10 reducciones de suma
-    t_ck = get_counter();
+    n_ck = get_counter();
 
 
     printf("\n-----------Matrix A------------\n");
@@ -278,7 +301,7 @@ int main() {
 
     printf("------------------------------\n");
     printf("REDUCCION DE SUMA F: %.2f\n", f);
-    printf("CICLOS DE RELOJ: %.2f\n", t_ck);
+    printf("CICLOS DE RELOJ: %.2f\n", n_ck);
 }
 
 void print_matrix(double* m, int r, int c) {
