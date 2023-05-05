@@ -249,7 +249,7 @@ int main() {
 
         // Obtener los indices: ind[i]*N + ind[i]
         // Indice de las columnas de la matriz d
-        __m256i ind_col = _mm256_maskload_epi32(ind+i, mask);
+        __m256i ind_col = _mm256_maskload_epi32(ind, mask);
 
         // TODO: IMPRIMER INDICES DE COLUMNAS, ROWS... EL ERROR DE CALCULO ESTA AQUI
 
