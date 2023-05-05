@@ -234,32 +234,11 @@ int main() {
         for (int j = 0; j < 8; j++) {
             mask_values[j] = j < mask_size ? -1 : 0;
         }
-
-        int * array = (int*) aligned_alloc(32, 67 * sizeof(int));
-
-        for (int i = 0; i < 67; i++) {
-            array[i] = i;
-        }
         
-        // Initialize mask vector
-        __m256i mask = _mm256_setr_epi32(-1, -1, -1, -1, -1, 0, 0, 0);
-
-        // Load according to mask
-        __m256i result2 = _mm256_maskload_epi32(array, mask);
-
-
-        // Display
-        int* i9 = (int*)&result2;
-        printf("\nresult2: ");
-        for (int j = 0; j < 8; j++) {
-            printf("%d ", i9[j]);
-        }
-        printf("\n");
-
-        // __m256i mask = _mm256_setr_epi32(
-        //         mask_values[0], mask_values[1], mask_values[2], mask_values[3],
-        //         mask_values[4], mask_values[5], mask_values[6], mask_values[7]
-        //         );
+        __m256i mask = _mm256_setr_epi32(
+                mask_values[0], mask_values[1], mask_values[2], mask_values[3],
+                mask_values[4], mask_values[5], mask_values[6], mask_values[7]
+                );
 
         // Version 2
         // E es un array temporal
@@ -298,27 +277,27 @@ int main() {
 
         printf("mask: ");
         for (int pi = 0; pi < 8; pi++) {
-            printf("%d ", mascara[i]);
+            printf("%d ", mascara[pi]);
         }
 
         printf("\nind_col: ");
         for (int pi = 0; pi < 8; pi++) {
-            printf("%d ", ind_col_p[i]);
+            printf("%d ", ind_col_p[pi]);
         }
 
         printf("\nind_rows: ");
         for (int pi = 0; pi < 8; pi++) {
-            printf("%d ", ind_rows_p[i]);
+            printf("%d ", ind_rows_p[pi]);
         }
 
         printf("\nind_vec: ");
         for (int pi = 0; pi < 8; pi++) {
-            printf("%d ", ind_vec_p[i]);
+            printf("%d ", ind_vec_p[pi]);
         }
 
         printf("\nd_vec: ");
         for (int pi = 0; pi < 8; pi++) {
-            printf("%.3f ", d_vec_p[i]);
+            printf("%.3f ", d_vec_p[pi]);
         }
         printf("\nF: %.3f\n\n", f);
     }
