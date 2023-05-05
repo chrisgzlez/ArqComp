@@ -165,7 +165,7 @@ int main() {
 
 
     __m512d vec_2 = _mm512_set1_pd(2.0);
-    __m512d c_vec = _mm512_load_pd(&c[0]);
+    __m512d c_vec = _mm512_load_pd(c);
 
     for(int bi = 0; bi < N; bi += BSIZE) {
         for (int bj = 0; bj < N; bj += BSIZE) {
@@ -235,10 +235,8 @@ int main() {
 
         // Obtener los indices: ind[i]*N + ind[i]
         // Indice de las columnas de la matriz d
-        __m256i ind_col = _mm256_load_si256((__m256i*)&ind[i]);
-
-        // TODO: IMPRIMER INDICES DE COLUMNAS, ROWS... EL ERROR DE CALCULO ESTA AQUI
-
+        __m256i ind_col = _mm256_load_si256((__m256i*)ind+i);
+        
         __m256i ind_rows = _mm256_mullo_epi32(ind_col, _mm256_set1_epi32(N));
 
         __m256i ind_vec = _mm256_add_epi32(ind_rows, ind_col);
