@@ -235,8 +235,26 @@ int main() {
             mask_values[j] = j < mask_size ? -1 : 0;
         }
 
+        int * array = (int*) aligned_alloc(32, 67 * sizeof(int));
+
+        for (int i = 0; i < 67; i++) {
+            array[i] = i;
+        }
+        
         // Initialize mask vector
-        __m256i mask = _mm256_setr_epi32(-1, -1, -1, -1, 0, 0, 0, 0);
+        __m256i mask = _mm256_setr_epi32(-1, -1, -1, -1, -1, 0, 0, 0);
+
+        // Load according to mask
+        __m256i result2 = _mm256_maskload_epi32(array, mask);
+
+
+        // Display
+        int* i9 = (int*)&result2;
+        printf("\nresult2: ");
+        for (int j = 0; j < 8; j++) {
+            printf("%d ", i9[j]);
+        }
+        printf("\n");
 
         // __m256i mask = _mm256_setr_epi32(
         //         mask_values[0], mask_values[1], mask_values[2], mask_values[3],
