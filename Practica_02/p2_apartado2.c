@@ -1,13 +1,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#define N 10
 #define SEMILLA 19
 
 // Tamaño de Linea cache 64 KiB
 
 #define BSIZE 15
 // BSIZE TIENE QUE SER MODULO DE N
+
+
+int N = 10;
 
 
 void start_counter();
@@ -61,7 +63,7 @@ double get_counter()
 void print_matrix(double* m, int r, int c);
 void print_array(double* m, int n);
 
-int main() {
+int main(int argc, char** argv) {
 
     double  *d;             // Matriz inicializada a 0
     double  *a, *b;         // Matrices que almacenan valores aleatorios
@@ -72,6 +74,11 @@ int main() {
 
     // Inicializamos semilla de random con la hora del sistema
     srand(SEMILLA);
+
+
+    if (argc > 1) {
+        N = atoi(argv[1]);
+    }
 
     // Reservamos memoria para los punteros
     a = (double*)malloc(N * 8 * sizeof(double *));
@@ -111,11 +118,6 @@ int main() {
             aux[tmp] = -1; 
         }
     }
-
-    printf("ind: ");
-    for (int pi = 0; pi < N; pi++) {
-        printf("%d ", ind[pi]);
-    }
     
     /** COMPUTACION **/
     start_counter();
@@ -128,7 +130,7 @@ int main() {
             // TODO: Calcular min(bi + BSIZE, N) y lo mismo para j
             int min_i = (bi + BSIZE) < N ? (bi + BSIZE) : N;
             int min_j = (bj + BSIZE) < N ? (bj + BSIZE) : N;
-            for (int i = 0; i < min_i; i++) {
+            for (int i = bi; i < min_i; i++) {
                 for (int j = bj; j < min_j; j++) {
                     // TODO: comparar: guardando i*n + j en varible y sin ella
                     // Inicializamos d
@@ -171,39 +173,22 @@ int main() {
     // TODO: Preguntar si desenrollamos con tantos elementos para que ocupen una linea cache
     // Y por consecuente usar _
     // Operacion de reducion de suma y compute de e
-    int end = N - (N%4);
-    for (int i = 0; i < end; i+=4) {
+    int end = N - (N%8);
+    for (int i = 0; i < end; i+=8) {
         // Version 2
         // E es un array temporal
         // Lo podemos substituir por un double temporal
         // O prescindir de el
         // Version 1: *(e + i) = *(d + ind[i]*N + ind[i]) / 2;
 
-        f += *(d + ind[i]*N + ind[i]) / 2;
-        printf("ind_col: %d\n", ind[i]);
-        printf("ind_row: %d\n", ind[i]*N);
-        printf("ind_vec: %d\n", ind[i]*N + ind[i]);
-        printf("d_vec: %f\n", *(d + ind[i]*N + ind[i]));
-        printf("f: %f\n\n", f);
-
+        f += *(d + ind[i+0]*N + ind[i+0]) / 2;
         f += *(d + ind[i+1]*N + ind[i+1]) / 2;
-        printf("ind_col: %d\n", ind[i+1]);
-        printf("ind_row: %d\n", ind[i+1]*N);
-        printf("ind_vec: %d\n", ind[i+1]*N + ind[i+1]);
-        printf("d_vec: %f\n", *(d + ind[i+1]*N + ind[i+1]));
-        printf("f: %f\n\n", f);
         f += *(d + ind[i+2]*N + ind[i+2]) / 2;
-        printf("ind_col: %d\n", ind[i+2]);
-        printf("ind_row: %d\n", ind[i+2]*N);
-        printf("ind_vec: %d\n", ind[i+2]*N + ind[i+2]);
-        printf("d_vec: %f\n", *(d + ind[i+2]*N + ind[i+2]));
-        printf("f: %f\n\n", f);
         f += *(d + ind[i+3]*N + ind[i+3]) / 2;
-        printf("ind_col: %d\n", ind[i+3]);
-        printf("ind_row: %d\n", ind[i+3]*N);
-        printf("ind_vec: %d\n", ind[i+3]*N + ind[i+3]);
-        printf("d_vec: %f\n", *(d + ind[i+3]*N + ind[i+3]));
-        printf("f: %f\n\n", f);
+        f += *(d + ind[i+4]*N + ind[i+4]) / 2;
+        f += *(d + ind[i+5]*N + ind[i+5]) / 2;
+        f += *(d + ind[i+6]*N + ind[i+6]) / 2;
+        f += *(d + ind[i+7]*N + ind[i+7]) / 2;
 
     }
 
@@ -214,16 +199,16 @@ int main() {
     n_ck = get_counter();
 
     // Prints debugging
-    printf("\n-----------Matrix A------------\n");
-    print_matrix(a, N, 8);
-    printf("\n-----------Matrix B------------\n");
-    print_matrix(b, 8, N);
-
-    printf("\n-----------Matrix D------------\n");
-    print_matrix(d, N, N);
-    printf("\n-----------Array E------------\n");
-    print_array(e, N);
-
+    //printf("\n-----------Matrix A------------\n");
+    //print_matrix(a, N, 8);
+    //printf("\n-----------Matrix B------------\n");
+    //print_matrix(b, 8, N);
+//
+    //printf("\n-----------Matrix D------------\n");
+    //print_matrix(d, N, N);
+    //printf("\n-----------Array E------------\n");
+    //print_array(e, N);
+//
     printf("------------------------------\n");
     printf("REDUCCION DE SUMA F: %.2f\n", f);
     printf("CICLOS DE RELOJ: %.2f\n", n_ck);

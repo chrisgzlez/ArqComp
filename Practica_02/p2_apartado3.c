@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#define N 10
 #define SEMILLA 19
 
 // Tamaño de cache de L1 48 kiB -- Entran 768 doubles
@@ -11,6 +10,10 @@
 #define BSIZE 15
 
 // BSIZE TIENE QUE SER MODULO DE N
+
+
+int N = 10;
+
 
 void print_matrix(double* m, int r, int c);
 void print_array(double* m, int n);
@@ -76,7 +79,7 @@ double get_counter()
 }
 
 
-int main() {
+int main(int argc, char** argv) {
 
     double  *d;             // Matriz inicializada a 0
     double  *a, *b;         // Matrices que almacenan valores aleatorios
@@ -88,6 +91,10 @@ int main() {
 
     // Inicializamos semilla de random con la hora del sistema
     srand(SEMILLA);
+
+    if (argc > 1) {
+        N = atoi(argv[1]);
+    }
 
     // Reservamos memoria para los punteros
     // De forma alineada a 32 bytes
@@ -127,12 +134,6 @@ int main() {
             aux[tmp] = -1;
         }
     }
-    printf("ind: ");
-    for (int pi = 0; pi < N; pi++) {
-        printf("%d ", ind[pi]);
-    }
-
-    printf("\n\n");
 
     /** COMPUTACION **/
     start_counter();
@@ -152,11 +153,6 @@ int main() {
     // TAMAÑO DE BLOQUE 15 (para contar con posibles datos que no tuvimos en cuenta)
 
 
-    // Print the sizes of int, float and double
-    printf("Size of int is %ld bytes\n", sizeof(int));
-    printf("Size of float is %ld bytes\n", sizeof(float));
-    printf("Size of double is %ld bytes\n", sizeof(double));
-
     // Operacion de computo de valores de d
     // TODO: Revisar las condiciones de parada
 
@@ -173,7 +169,7 @@ int main() {
             int min_i = (bi + BSIZE) < N ? (bi + BSIZE) : N;
             int min_j = (bj + BSIZE) < N ? (bj + BSIZE) : N;
 
-            for (int i = 0; i < min_i; i++) {
+            for (int i = bi; i < min_i; i++) {
                 for (int j = bj; j < min_j; j++) {
 
                     // TODO: comparar: guardando i*n + j en varible y sin ella
@@ -236,7 +232,7 @@ int main() {
         // Obtener los indices: ind[i]*N + ind[i]
         // Indice de las columnas de la matriz d
         __m256i ind_col = _mm256_load_si256((__m256i*)ind+i);
-        
+
         __m256i ind_rows = _mm256_mullo_epi32(ind_col, _mm256_set1_epi32(N));
 
         __m256i ind_vec = _mm256_add_epi32(ind_rows, ind_col);

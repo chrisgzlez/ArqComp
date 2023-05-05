@@ -1,9 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
-#define N 10
 #define SEMILLA 19
 
+
+int N = 10;
 
 void start_counter();
 double get_counter();
@@ -56,7 +57,7 @@ double get_counter()
 void print_matrix(double* m, int r, int c);
 void print_array(double* m, int n);
 
-int main() {
+int main(int argc, char** argv) {
 
     double  *d;             // Matriz inicializada a 0
     double  *a, *b;         // Matrices que almacenan valores aleatorios
@@ -65,9 +66,13 @@ int main() {
     double  f = 0;          // Variable de salida de la suma
     double n_ck = 0;        // Numero de ciclos de ejecucion de la funcion
 
-
     // Inicializamos semilla de random con la hora del sistema
     srand(SEMILLA);
+
+    if (argc > 1) {
+        N = atoi(argv[1]);
+    }
+
     // Reservamos memoria para los punteros
     a = (double*)malloc(N * 8 * sizeof(double *));
     b = (double*)malloc(8 * N * sizeof(double *));
@@ -99,11 +104,11 @@ int main() {
     // Creacion del array desordenado de indices
     int aux[N];
     for(int i = 0; i < N; i++) aux[i] = i;
-    int i = 0;
-    while (i < N) {
+    int z = 0;
+    while (z < N) {
         int tmp = rand()%N;
         if (aux[tmp] != -1) {
-            ind[i++] = aux[tmp];
+            ind[z++] = aux[tmp];
             aux[tmp] = -1; 
         }
     }
@@ -128,7 +133,7 @@ int main() {
     }
 
     // Operacion de reducion de suma y compute de e
-    for (i = 0; i < N; i++) {
+    for (int i = 0; i < N; i++) {
         *(e + i) = *(d + ind[i]*N + ind[i]) / 2;
         f += e[i];
     }
