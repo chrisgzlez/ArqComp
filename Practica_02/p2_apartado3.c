@@ -95,7 +95,7 @@ int main() {
     d = (double*)aligned_alloc(64, N * N * sizeof(double *));
     b = (double*)aligned_alloc(64, 8 * N * sizeof(double *));
     c = (double*)aligned_alloc(64, 8 * sizeof(double));
-    ind = (int*)aligned_alloc(64, N * sizeof(int));
+    ind = (int*)aligned_alloc(32, N * sizeof(int));
 
     // Reserva de matrices y arrays
     // Inicializacion de matrices y arrays
