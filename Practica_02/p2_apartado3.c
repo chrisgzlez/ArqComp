@@ -236,7 +236,7 @@ int main() {
         }
 
         // Initialize mask vector
-        __m256i mask = _mm256_load_si256((__m256i *)mask_values);
+        __m256i mask = _mm256_load_si256((__m256i *)&mask_values[0]);
 
         // Version 2
         // E es un array temporal
@@ -246,7 +246,7 @@ int main() {
 
         // Obtener los indices: ind[i]*N + ind[i]
         // Indice de las columnas de la matriz d
-        __m256i ind_col = _mm256_maskload_epi32(ind, mask);
+        __m256i ind_col = _mm256_maskload_epi32(ind+i, mask);
 
         // TODO: IMPRIMER INDICES DE COLUMNAS, ROWS... EL ERROR DE CALCULO ESTA AQUI
 

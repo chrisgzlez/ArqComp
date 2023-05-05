@@ -187,22 +187,22 @@ int main() {
         printf("f: %f\n\n", f);
 
         f += *(d + ind[i+1]*N + ind[i+1]) / 2;
-        printf("ind_col: %d\n", ind[i]);
-        printf("ind_row: %d\n", ind[i]*N);
-        printf("ind_vec: %d\n", ind[i]*N + ind[i]);
-        printf("d_vec: %f\n", *(d + ind[i]*N + ind[i]));
+        printf("ind_col: %d\n", ind[i+1]);
+        printf("ind_row: %d\n", ind[i+1]*N);
+        printf("ind_vec: %d\n", ind[i+1]*N + ind[i+1]);
+        printf("d_vec: %f\n", *(d + ind[i+1]*N + ind[i+1]));
         printf("f: %f\n\n", f);
         f += *(d + ind[i+2]*N + ind[i+2]) / 2;
-        printf("ind_col: %d\n", ind[i]);
-        printf("ind_row: %d\n", ind[i]*N);
-        printf("ind_vec: %d\n", ind[i]*N + ind[i]);
-        printf("d_vec: %f\n", *(d + ind[i]*N + ind[i]));
+        printf("ind_col: %d\n", ind[i+2]);
+        printf("ind_row: %d\n", ind[i+2]*N);
+        printf("ind_vec: %d\n", ind[i+2]*N + ind[i+2]);
+        printf("d_vec: %f\n", *(d + ind[i+2]*N + ind[i+2]));
         printf("f: %f\n\n", f);
         f += *(d + ind[i+3]*N + ind[i+3]) / 2;
-        printf("ind_col: %d\n", ind[i]);
-        printf("ind_row: %d\n", ind[i]*N);
-        printf("ind_vec: %d\n", ind[i]*N + ind[i]);
-        printf("d_vec: %f\n", *(d + ind[i]*N + ind[i]));
+        printf("ind_col: %d\n", ind[i+3]);
+        printf("ind_row: %d\n", ind[i+3]*N);
+        printf("ind_vec: %d\n", ind[i+3]*N + ind[i+3]);
+        printf("d_vec: %f\n", *(d + ind[i+3]*N + ind[i+3]));
         printf("f: %f\n\n", f);
 
     }
