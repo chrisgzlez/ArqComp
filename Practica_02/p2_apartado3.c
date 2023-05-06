@@ -258,16 +258,19 @@ int main(int argc, char** argv) {
     n_ck = get_counter();
 
 
-    printf("\n-----------Matrix A------------\n");
-    print_matrix(a, N, 8);
-    printf("\n-----------Matrix B------------\n");
-    print_matrix(b, 8, N);
-    printf("\n-----------Matrix D------------\n");
-    print_matrix(d, N, N);
+    // printf("\n-----------Matrix A------------\n");
+    // print_matrix(a, N, 8);
+    // printf("\n-----------Matrix B------------\n");
+    // print_matrix(b, 8, N);
+    // printf("\n-----------Matrix D------------\n");
+    // print_matrix(d, N, N);
+//
+    // printf("------------------------------\n");
+    // printf("REDUCCION DE SUMA F: %.2f\n", f);
+    // printf("CICLOS DE RELOJ: %.2f\n", n_ck);
 
-    printf("------------------------------\n");
-    printf("REDUCCION DE SUMA F: %.2f\n", f);
-    printf("CICLOS DE RELOJ: %.2f\n", n_ck);
+    // Printf final para coger datos
+    fprintf(stdout, "%.2f\n", n_ck);
 }
 
 void print_matrix(double* m, int r, int c) {

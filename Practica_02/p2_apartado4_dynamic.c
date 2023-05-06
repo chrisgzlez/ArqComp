@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <time.h>
+#include <omp.h>
 #define SEMILLA 19
 
 // Tamaño de Linea cache 64 KiB
@@ -9,7 +9,8 @@
 // BSIZE TIENE QUE SER MODULO DE N
 
 
-int N = 10;
+int N = 10;     // Numero de Elementos
+int C = 4;      // Numero de Threads
 
 
 void start_counter();
@@ -67,7 +68,7 @@ int main(int argc, char** argv) {
 
     double  *d;             // Matriz inicializada a 0
     double  *a, *b;         // Matrices que almacenan valores aleatorios
-    double  *c, *e;         // Arrays
+    double  *c;         // Arrays
     int     *ind;           // Array desordenado aleatoriamente con valores de fila/columna sin repetirse
     double  f = 0;          // Variable de salida de la suma
     double n_ck = 0;        // Numero de ciclos de ejecucion de la funcion
@@ -75,23 +76,24 @@ int main(int argc, char** argv) {
     // Inicializamos semilla de random con la hora del sistema
     srand(SEMILLA);
 
-
+    // Lectura argumentos de entrada
     if (argc > 1) {
         N = atoi(argv[1]);
+        if (argc > 2)
+            C = atoi(argv[2]);
     }
 
     // Reservamos memoria para los punteros
-    a = (double*)malloc(N * 8 * sizeof(double *));
-    d = (double*)malloc(N * N * sizeof(double *));
-    b = (double*)malloc(8 * N * sizeof(double *));
+    a = (double*)malloc(N * 8 * sizeof(double));
+    d = (double*)malloc(N * N * sizeof(double));
+    b = (double*)malloc(8 * N * sizeof(double));
     c = (double*)malloc(8 * sizeof(double));
-    e = (double*)malloc(N * sizeof(double));
     ind = (int*)malloc(N * sizeof(int));
-    
+
     // Reserva de matrices y arrays
     // Inicializacion de matrices y arrays
     for (int i = 0; i < N*N; i++) {
-        
+
         // Con este if ahorramos el uso de otro bucle for
         // para reservar memoria para b
         if (i < 8) {
@@ -115,72 +117,45 @@ int main(int argc, char** argv) {
         int tmp = rand()%N;
         if (aux[tmp] != -1) {
             ind[z++] = aux[tmp];
-            aux[tmp] = -1; 
+            aux[tmp] = -1;
         }
     }
-    
+
     /** COMPUTACION **/
     start_counter();
 
-    // Operacion de computo de valores de d
-    // TODO: PREGUNTAR JAVI SOBRE BLOCK TILING
-    // Y SI TRAER LINEA CACHE
-    for(int bi = 0; bi < N; bi += BSIZE) {
-        for (int bj = 0; bj < N; bj += BSIZE) {
-            // TODO: Calcular min(bi + BSIZE, N) y lo mismo para j
-            int min_i = (bi + BSIZE) < N ? (bi + BSIZE) : N;
-            int min_j = (bj + BSIZE) < N ? (bj + BSIZE) : N;
-            for (int i = bi; i < min_i; i++) {
-                for (int j = bj; j < min_j; j++) {
-                    // TODO: comparar: guardando i*n + j en varible y sin ella
-                    // Inicializamos d
-                    *(d + i * N + j) = 0;
-                    // Version 2: Intercambio de bucles
-                    // Accedemos a los datos de forma lineal
-                    // Ya lo haciamos en la Version 1
 
-                    // Version 2: Desenrollado de bucle k
-                    *(d + i * N + j) += 2 * a[i * 8 + 0] * (b[0 * N + j] - c[0]);
-                    *(d + i * N + j) += 2 * a[i * 8 + 1] * (b[1 * N + j] - c[1]);
-                    *(d + i * N + j) += 2 * a[i * 8 + 2] * (b[2 * N + j] - c[2]);
-                    *(d + i * N + j) += 2 * a[i * 8 + 3] * (b[3 * N + j] - c[3]);
-                    *(d + i * N + j) += 2 * a[i * 8 + 4] * (b[4 * N + j] - c[4]);
-                    *(d + i * N + j) += 2 * a[i * 8 + 5] * (b[5 * N + j] - c[5]);
-                    *(d + i * N + j) += 2 * a[i * 8 + 6] * (b[6 * N + j] - c[6]);
-                    *(d + i * N + j) += 2 * a[i * 8 + 7] * (b[7 * N + j] - c[7]);
+    /// PARALELIZACION
+    // Publicas: a, b, c, d, f y ind
+    // Privadas: bi, bj, i, j
 
-                    // Advantages of unroll the loop:
-                    // - Less memory access
-                    // - More data can be loaded into cache
-                    // - Less time to load data
-                    // - More data can be processed in one instruction
-                    // - Less time to process data
-                    // - Less time to jump from loop to loop
-                    // - Less time to check loop condition
-                    // - Less time to update loop counter
-                    // - Less time to update loop bound
-                    // - Less time to update loop variable
+    // TODO: Probar con dynamic, guided and auto
+    // TODO: Probar con collpase (sin BSIZE fors) vs no-collapse
+    #pragma omp parallel for schedule(dynamic, BSIZE) num_threads(C)
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            // TODO: comparar: guardando i*n + j en varible y sin ella
+            // Inicializamos d
+            *(d + i * N + j) = 0;
 
-                    // Version 1: Bucle k
-                    // for (int k = 0; k < 8; k++) {
-                    //     *(d + i*N + j) += 2 * a[i*8 + k] * b[k*N + j] - c[k];
-                    // }
-                }
-            }
+            // Version 2: Desenrollado de bucle k
+            *(d + i * N + j) += 2 * a[i * 8 + 0] * (b[0 * N + j] - c[0]);
+            *(d + i * N + j) += 2 * a[i * 8 + 1] * (b[1 * N + j] - c[1]);
+            *(d + i * N + j) += 2 * a[i * 8 + 2] * (b[2 * N + j] - c[2]);
+            *(d + i * N + j) += 2 * a[i * 8 + 3] * (b[3 * N + j] - c[3]);
+            *(d + i * N + j) += 2 * a[i * 8 + 4] * (b[4 * N + j] - c[4]);
+            *(d + i * N + j) += 2 * a[i * 8 + 5] * (b[5 * N + j] - c[5]);
+            *(d + i * N + j) += 2 * a[i * 8 + 6] * (b[6 * N + j] - c[6]);
+            *(d + i * N + j) += 2 * a[i * 8 + 7] * (b[7 * N + j] - c[7]);
         }
     }
 
-    // TODO: Preguntar si desenrollamos con tantos elementos para que ocupen una linea cache
-    // Y por consecuente usar _
-    // Operacion de reducion de suma y compute de e
+    // MAIN THREAD
     int end = N - (N%8);
-    for (int i = 0; i < end; i+=8) {
-        // Version 2
-        // E es un array temporal
-        // Lo podemos substituir por un double temporal
-        // O prescindir de el
-        // Version 1: *(e + i) = *(d + ind[i]*N + ind[i]) / 2;
 
+    // PARALELIZACION
+    #pragma omp parallel for schedule(static, 1) num_threads(C)
+    for (int i = 0; i < end; i+=8) {
         f += *(d + ind[i+0]*N + ind[i+0]) / 2;
         f += *(d + ind[i+1]*N + ind[i+1]) / 2;
         f += *(d + ind[i+2]*N + ind[i+2]) / 2;
@@ -189,29 +164,30 @@ int main(int argc, char** argv) {
         f += *(d + ind[i+5]*N + ind[i+5]) / 2;
         f += *(d + ind[i+6]*N + ind[i+6]) / 2;
         f += *(d + ind[i+7]*N + ind[i+7]) / 2;
-
     }
 
+    // MAIN THREAD
     for (int i = end; i < N; i++) {
         f += *(d + ind[i]*N + ind[i]) / 2;
     }
+
     /** FIN COMPUTACION **/
     n_ck = get_counter();
 
     // Prints debugging
-    //printf("\n-----------Matrix A------------\n");
-    //print_matrix(a, N, 8);
-    //printf("\n-----------Matrix B------------\n");
-    //print_matrix(b, 8, N);
+    // printf("\n-----------Matrix A------------\n");
+    // print_matrix(a, N, 8);
+    // printf("\n-----------Matrix B------------\n");
+    // print_matrix(b, 8, N);
 //
-    //printf("\n-----------Matrix D------------\n");
-    //print_matrix(d, N, N);
-    //printf("\n-----------Array E------------\n");
-    //print_array(e, N);
+    // printf("\n-----------Matrix D------------\n");
+    // print_matrix(d, N, N);
+    // printf("\n-----------Array E------------\n");
+    // print_array(e, N);
 //
-    // printf("------------------------------\n");
-    // printf("REDUCCION DE SUMA F: %.2f\n", f);
-    // printf("CICLOS DE RELOJ: %.2f\n", n_ck);
+    //printf("------------------------------\n");
+    //printf("REDUCCION DE SUMA F: %.2f\n", f);
+    //printf("CICLOS DE RELOJ: %.2f\n", n_ck);
 
     // Printf final para coger datos
     fprintf(stdout, "%.2f\n", n_ck);
