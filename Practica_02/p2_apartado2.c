@@ -90,20 +90,14 @@ int main(int argc, char** argv) {
     
     // Reserva de matrices y arrays
     // Inicializacion de matrices y arrays
-    for (int i = 0; i < N*N; i++) {
-        
-        // Con este if ahorramos el uso de otro bucle for
-        // para reservar memoria para b
-        if (i < 8) {
-            // el vector c tiene valores aleatorios
-            *(c+i) = rand()%200 / 100.;
-        }
 
-        // Inicializamos a y b
-        if (i < (N*8)) {
-            *(a + i) = rand()%200 / 100.;
-            *(b + i) = rand()%200 / 100.;
-        }
+    for(int i = 0; i < N*8; i++) {
+        *(a + i) = rand()%200 / 100.;
+        *(b + i) = rand()%200 / 100.;
+    }
+
+    for(int i = 0; i < 8; i++) {
+        *(c+i) = rand()%200 / 100.;
     }
 
     // Creacion del array desordenado de indices
@@ -206,13 +200,12 @@ int main(int argc, char** argv) {
 //
     //printf("\n-----------Matrix D------------\n");
     //print_matrix(d, N, N);
-    //printf("\n-----------Array E------------\n");
-    //print_array(e, N);
+    ////printf("\n-----------Array E------------\n");
+    ////print_array(e, N);
 //
     // printf("------------------------------\n");
     // printf("REDUCCION DE SUMA F: %.2f\n", f);
     // printf("CICLOS DE RELOJ: %.2f\n", n_ck);
-
     // Printf final para coger datos
     fprintf(stdout, "%.2f\n", n_ck);
 }

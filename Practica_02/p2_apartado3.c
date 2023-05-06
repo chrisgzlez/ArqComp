@@ -106,20 +106,13 @@ int main(int argc, char** argv) {
 
     // Reserva de matrices y arrays
     // Inicializacion de matrices y arrays
-    for (int i = 0; i < N*N; i++) {
+    for(int i = 0; i < N*8; i++) {
+        *(a + i) = rand()%200 / 100.;
+        *(b + i) = rand()%200 / 100.;
+    }
 
-        // Con este if ahorramos el uso de otro bucle for
-        // para reservar memoria para b
-        if (i < 8) {
-            // el vector c tiene valores aleatorios
-            *(c+i) = rand()%200 / 100.;
-        }
-
-        // Inicializamos a y b
-        if (i < (N*8)) {
-            *(a + i) = rand()%200 / 100.;
-            *(b + i) = rand()%200 / 100.;
-        }
+    for(int i = 0; i < 8; i++) {
+        *(c+i) = rand()%200 / 100.;
     }
 
     // Creacion del array desordenado de indices
@@ -163,6 +156,7 @@ int main(int argc, char** argv) {
     __m512d vec_2 = _mm512_set1_pd(2.0);
     __m512d c_vec = _mm512_load_pd(c);
 
+    //int end = N - (N%8);
     for(int bi = 0; bi < N; bi += BSIZE) {
         for (int bj = 0; bj < N; bj += BSIZE) {
             // TODO: Calcular min(bi + BSIZE, N) y lo mismo para j
@@ -256,18 +250,16 @@ int main(int argc, char** argv) {
     // Obtenemos el numero de ciclos totales que tardaron
     // las 10 reducciones de suma
     n_ck = get_counter();
-
-
-    // printf("\n-----------Matrix A------------\n");
-    // print_matrix(a, N, 8);
-    // printf("\n-----------Matrix B------------\n");
-    // print_matrix(b, 8, N);
-    // printf("\n-----------Matrix D------------\n");
-    // print_matrix(d, N, N);
+     // printf("\n-----------Matrix A------------\n");
+     // print_matrix(a, N, 8);
+     // printf("\n-----------Matrix B------------\n");
+     // print_matrix(b, 8, N);
+     // printf("\n-----------Matrix D------------\n");
+     // print_matrix(d, N, N);
 //
-    // printf("------------------------------\n");
-    // printf("REDUCCION DE SUMA F: %.2f\n", f);
-    // printf("CICLOS DE RELOJ: %.2f\n", n_ck);
+     // printf("------------------------------\n");
+     // printf("REDUCCION DE SUMA F: %.2f\n", f);
+     // printf("CICLOS DE RELOJ: %.2f\n", n_ck);
 
     // Printf final para coger datos
     fprintf(stdout, "%.2f\n", n_ck);
