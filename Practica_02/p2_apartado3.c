@@ -231,7 +231,7 @@ int main(int argc, char** argv) {
 
         // Obtener los indices: ind[i]*N + ind[i]
         // Indice de las columnas de la matriz d
-        __m256i ind_col = _mm256_load_si256((__m256i*)ind+i);
+        __m256i ind_col = _mm256_load_si256((__m256i*)&ind[i]);
 
         __m256i ind_rows = _mm256_mullo_epi32(ind_col, _mm256_set1_epi32(N));
 
