@@ -1,0 +1,202 @@
+slurmstepd: info: Setting TMPDIR to /scratch/2794872. Previous errors about TMPDIR can be discarded
+##################################
+N: 250
+##################################
+Ejercicio 1 o0
+6076324.00
+Ejercicio 1 o2
+1191914.00
+Ejercicio 1 o3
+623310.00
+Ejercicio 2
+4487454.00
+Ejercicio 3
+
+Ejercicio 4 o0
+1521784.00
+Ejercicio 4 o0 Dynamic
+1446178.00
+Ejercicio 4 o0 Guided
+1434776.00
+Ejercicio 4 o0 Collapse
+1405596.00
+Ejercicio 4 o2
+510902.00
+##################################
+
+##################################
+N: 500
+##################################
+Ejercicio 1 o0
+24445282.00
+Ejercicio 1 o2
+4915110.00
+Ejercicio 1 o3
+2707800.00
+Ejercicio 2
+17904518.00
+Ejercicio 3
+27380124.00
+Ejercicio 4 o0
+4988232.00
+Ejercicio 4 o0 Dynamic
+5026100.00
+Ejercicio 4 o0 Guided
+5026608.00
+Ejercicio 4 o0 Collapse
+5004598.00
+Ejercicio 4 o2
+1445984.00
+##################################
+
+##################################
+N: 750
+##################################
+Ejercicio 1 o0
+55092722.00
+Ejercicio 1 o2
+9714368.00
+Ejercicio 1 o3
+4773854.00
+Ejercicio 2
+39223300.00
+Ejercicio 3
+61574736.00
+Ejercicio 4 o0
+10552572.00
+Ejercicio 4 o0 Dynamic
+10370236.00
+Ejercicio 4 o0 Guided
+10346840.00
+Ejercicio 4 o0 Collapse
+10344084.00
+Ejercicio 4 o2
+3030196.00
+##################################
+
+##################################
+N: 1000
+##################################
+Ejercicio 1 o0
+97049754.00
+Ejercicio 1 o2
+16107482.00
+Ejercicio 1 o3
+8134382.00
+Ejercicio 2
+68444834.00
+Ejercicio 3
+106132242.00
+Ejercicio 4 o0
+17682086.00
+Ejercicio 4 o0 Dynamic
+17715802.00
+Ejercicio 4 o0 Guided
+17934050.00
+Ejercicio 4 o0 Collapse
+17908284.00
+Ejercicio 4 o2
+4417760.00
+##################################
+
+##################################
+N: 1500
+##################################
+Ejercicio 1 o0
+215261562.00
+Ejercicio 1 o2
+36081926.00
+Ejercicio 1 o3
+15588278.00
+Ejercicio 2
+153505508.00
+Ejercicio 3
+
+Ejercicio 4 o0
+39746976.00
+Ejercicio 4 o0 Dynamic
+39923102.00
+Ejercicio 4 o0 Guided
+39866112.00
+Ejercicio 4 o0 Collapse
+39544740.00
+Ejercicio 4 o2
+10235566.00
+##################################
+
+##################################
+N: 2000
+##################################
+Ejercicio 1 o0
+378911352.00
+Ejercicio 1 o2
+64085542.00
+Ejercicio 1 o3
+28638838.00
+Ejercicio 2
+273435440.00
+Ejercicio 3
+425021634.00
+Ejercicio 4 o0
+69904998.00
+Ejercicio 4 o0 Dynamic
+70201082.00
+Ejercicio 4 o0 Guided
+69924512.00
+Ejercicio 4 o0 Collapse
+69548522.00
+Ejercicio 4 o2
+17128056.00
+##################################
+
+##################################
+N: 2550
+##################################
+Ejercicio 1 o0
+613446650.00
+Ejercicio 1 o2
+109552694.00
+Ejercicio 1 o3
+47540448.00
+Ejercicio 2
+446484142.00
+Ejercicio 3
+693945358.00
+Ejercicio 4 o0
+113612484.00
+Ejercicio 4 o0 Dynamic
+112779780.00
+Ejercicio 4 o0 Guided
+113760154.00
+Ejercicio 4 o0 Collapse
+113155718.00
+Ejercicio 4 o2
+27888256.00
+##################################
+
+##################################
+N: 3000
+##################################
+Ejercicio 1 o0
+854819752.00
+Ejercicio 1 o2
+148316344.00
+Ejercicio 1 o3
+67135830.00
+Ejercicio 2
+617562242.00
+Ejercicio 3
+
+Ejercicio 4 o0
+157386592.00
+Ejercicio 4 o0 Dynamic
+158221528.00
+Ejercicio 4 o0 Guided
+156783590.00
+Ejercicio 4 o0 Collapse
+157229292.00
+Ejercicio 4 o2
+40406548.00
+##################################
+
+Wrong F. Check it out.
