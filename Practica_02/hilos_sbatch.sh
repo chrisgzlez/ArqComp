@@ -27,7 +27,7 @@ do
       echo "##################################"
 
       F6=`./p24o0 $N $C`
-      echo $F6 >> "results/hilos/sbatch/v4_$N_$C.txt"
+      echo $F6 >> "results/hilos/sbatch/v4_n$N""_h$C.txt"
       echo $F6
 
     done
