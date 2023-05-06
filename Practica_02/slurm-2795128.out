@@ -1,0 +1,3 @@
+slurmstepd: info: Setting TMPDIR to /scratch/2795128. Previous errors about TMPDIR can be discarded
+/var/spool/slurmd/job2795128/slurm_script: línea 56: EOF inesperado mientras se buscaba un `"' coincidente
+/var/spool/slurmd/job2795128/slurm_script: línea 59: error sintáctico: no se esperaba el final del fichero

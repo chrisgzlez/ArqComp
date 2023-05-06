@@ -15,7 +15,7 @@ gcc p2_apartado4.c  -o p24o0 -O0 -fopenmp
 
 for C in 4 8 16 32 64
 do
-  echo "N, ck" >> "results/hilos/v4_h$C.csv""
+  echo "N, ck" >> "results/hilos/v4_h$C.csv"
 done
 
 for N in 250 500 750 1000 1500 2000 2550 3000
@@ -32,7 +32,7 @@ do
       echo "##################################"
 
       F6=`./p24o0 $N $C`
-      echo "$N, $F6" >> "results/hilos/sbatch/v4_h$C.csv"
+      echo "$N, $F6" >> "results/hilos/v4_h$C.csv"
       echo $F6
 
     done
