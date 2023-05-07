@@ -156,7 +156,8 @@ int main(int argc, char** argv) {
     __m512d vec_2 = _mm512_set1_pd(2.0);
     __m512d c_vec = _mm512_load_pd(c);
     __m256i n_positions = _mm256_set1_epi32(N);
-    __m256i col_positions = _mm256_mullo_epi32(col_positions, _mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7));
+    __m256i col_positions = _mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7);
+    col_positions = _mm256_mullo_epi32(col_positions, _mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7));
 
     //int end = N - (N%8);
     for(int bi = 0; bi < N; bi += BSIZE) {
