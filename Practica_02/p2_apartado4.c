@@ -68,7 +68,7 @@ int main(int argc, char** argv) {
 
     double  *d;             // Matriz inicializada a 0
     double  *a, *b;         // Matrices que almacenan valores aleatorios
-    double  *c;         // Arrays
+    double  *c, *e;         // Arrays
     int     *ind;           // Array desordenado aleatoriamente con valores de fila/columna sin repetirse
     double  f = 0;          // Variable de salida de la suma
     double n_ck = 0;        // Numero de ciclos de ejecucion de la funcion
@@ -88,6 +88,7 @@ int main(int argc, char** argv) {
     d = (double*)malloc(N * N * sizeof(double));
     b = (double*)malloc(8 * N * sizeof(double));
     c = (double*)malloc(8 * sizeof(double));
+    e = (double*)malloc(N * sizeof(double));
     ind = (int*)malloc(N * sizeof(int));
 
     // Reserva de matrices y arrays
@@ -125,7 +126,7 @@ int main(int argc, char** argv) {
 
     // TODO: Probar con dynamic, guided and auto
     // TODO: Probar con collpase (sin BSIZE fors) vs no-collapse
-    #pragma omp parallel for schedule(static, BSIZE) num_threads(C)
+    #pragma omp parallel for schedule(static, 1) num_threads(C)
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
             // TODO: comparar: guardando i*n + j en varible y sin ella
@@ -150,14 +151,18 @@ int main(int argc, char** argv) {
     // PARALELIZACION
     #pragma omp parallel for schedule(static, 1) num_threads(C)
     for (int i = 0; i < end; i+=8) {
-        f += *(d + ind[i+0]*N + ind[i+0]) / 2;
-        f += *(d + ind[i+1]*N + ind[i+1]) / 2;
-        f += *(d + ind[i+2]*N + ind[i+2]) / 2;
-        f += *(d + ind[i+3]*N + ind[i+3]) / 2;
-        f += *(d + ind[i+4]*N + ind[i+4]) / 2;
-        f += *(d + ind[i+5]*N + ind[i+5]) / 2;
-        f += *(d + ind[i+6]*N + ind[i+6]) / 2;
-        f += *(d + ind[i+7]*N + ind[i+7]) / 2;
+        *(e + i+0) = *(d + ind[i+0]*N + ind[i+0]) / 2;
+        *(e + i+1) = *(d + ind[i+1]*N + ind[i+1]) / 2;
+        *(e + i+2) = *(d + ind[i+2]*N + ind[i+2]) / 2;
+        *(e + i+3) = *(d + ind[i+3]*N + ind[i+3]) / 2;
+        *(e + i+4) = *(d + ind[i+4]*N + ind[i+4]) / 2;
+        *(e + i+5) = *(d + ind[i+5]*N + ind[i+5]) / 2;
+        *(e + i+6) = *(d + ind[i+6]*N + ind[i+6]) / 2;
+        *(e + i+7) = *(d + ind[i+7]*N + ind[i+7]) / 2;
+    }
+
+    for(int i = 0; i < end; i++) {
+        f+= *(e + i);
     }
 
     // MAIN THREAD

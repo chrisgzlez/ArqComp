@@ -244,6 +244,11 @@ int main(int argc, char** argv) {
     }
     f /= 2;
 
+    f = 0;
+    for (int i = 0; i < N; i++) {
+        f += *(d + ind[i] * N + ind[i]) / 2;
+    }
+
     /** FIN COMPUTACION **/
 
 
