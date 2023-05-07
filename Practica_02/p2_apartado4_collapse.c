@@ -185,7 +185,7 @@ int main(int argc, char** argv) {
 //
     // Printf final para coger datos
     fprintf(stdout, "%.2f\n", f);
-    fprintf(stdout, "%.2f\n", n_ck);
+    // fprintf(stdout, "%.2f\n", n_ck);
 }
 
 void print_matrix(double* m, int r, int c) {

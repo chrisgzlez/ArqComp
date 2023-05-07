@@ -34,37 +34,30 @@ do
 
     echo "Ejercicio 1 o0"
     F1=`./p21o0 $N`
-    echo $F1 >> "results/version1_o0_$N.txt"
     echo $F1
 
     echo "Ejercicio 1 o2"
     F2=`./p21o2 $N`
-    echo $F2 >> "results/version1_o2_$N.txt"
     echo $F2
 
     echo "Ejercicio 1 o3"
     F3=`./p21o3 $N`
-    echo $F3 >> "results/version1_o3_$N.txt"
     echo $F3
 
     echo "Ejercicio 2"
     F4=`./p22 $N`
-    echo $F4 >> "results/version2_o0_$N.txt"
     echo $F4
 
     echo "Ejercicio 3"
     F5=`./p23 $N`
-    echo $F5 >> "results/version3_o0_$N.txt"
     echo $F5
 
     echo "Ejercicio 4 o0"
     F6=`./p24o0 $N $C`
-    echo $F6 >> "results/version4_o0_$N.txt"
     echo $F6
 
     echo "Ejercicio 4 o2"
     F7=`./p24o2 $N $C`
-    echo $F7 >> "results/version4_o2_$N.txt"
     echo $F7
 
     echo "##################################"
