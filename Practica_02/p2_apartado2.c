@@ -85,7 +85,6 @@ int main(int argc, char** argv) {
     d = (double*)malloc(N * N * sizeof(double *));
     b = (double*)malloc(8 * N * sizeof(double *));
     c = (double*)malloc(8 * sizeof(double));
-    e = (double*)malloc(N * sizeof(double));
     ind = (int*)malloc(N * sizeof(int));
     
     // Reserva de matrices y arrays
@@ -175,20 +174,22 @@ int main(int argc, char** argv) {
         // O prescindir de el
         // Version 1: *(e + i) = *(d + ind[i]*N + ind[i]) / 2;
 
-        f += *(d + ind[i+0]*N + ind[i+0]) / 2;
-        f += *(d + ind[i+1]*N + ind[i+1]) / 2;
-        f += *(d + ind[i+2]*N + ind[i+2]) / 2;
-        f += *(d + ind[i+3]*N + ind[i+3]) / 2;
-        f += *(d + ind[i+4]*N + ind[i+4]) / 2;
-        f += *(d + ind[i+5]*N + ind[i+5]) / 2;
-        f += *(d + ind[i+6]*N + ind[i+6]) / 2;
-        f += *(d + ind[i+7]*N + ind[i+7]) / 2;
+        f += *(d + ind[i+0]*N + ind[i+0]);
+        f += *(d + ind[i+1]*N + ind[i+1]);
+        f += *(d + ind[i+2]*N + ind[i+2]);
+        f += *(d + ind[i+3]*N + ind[i+3]);
+        f += *(d + ind[i+4]*N + ind[i+4]);
+        f += *(d + ind[i+5]*N + ind[i+5]);
+        f += *(d + ind[i+6]*N + ind[i+6]);
+        f += *(d + ind[i+7]*N + ind[i+7]);
 
     }
 
     for (int i = end; i < N; i++) {
-        f += *(d + ind[i]*N + ind[i]) / 2;
+        f += *(d + ind[i]*N + ind[i]);
     }
+    f /= 2;
+
     /** FIN COMPUTACION **/
     n_ck = get_counter();
 
@@ -207,6 +208,7 @@ int main(int argc, char** argv) {
     // printf("REDUCCION DE SUMA F: %.2f\n", f);
     // printf("CICLOS DE RELOJ: %.2f\n", n_ck);
     // Printf final para coger datos
+    fprintf(stdout, "%.2f\n", f);
     fprintf(stdout, "%.2f\n", n_ck);
 }
 

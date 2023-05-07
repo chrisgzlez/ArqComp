@@ -135,13 +135,13 @@ int main(int argc, char** argv) {
     // int: 4 bytes
     // float: 4 bytes
     // double: 8 bytes
-    // Tenemos 4 variables int: 4 * 16 = 64 bytes
-    // L1: 49152 - 64 = 49088 bytes (libres)
-    // 49088 / 8 = 6136 doubles
+    // Tenemos 4 variables int: 4 * 4 = 16 bytes
+    // L1: 49152 - 16 = 49136 bytes
+    // 49136 / 8 = 6142 doubles
     // Queremos tener c en memoria cache: 8 doubles
-    // 6136 - 8 = 6128 doubles (libres)
+    // 6142 - 8 = 6134 doubles
     // 17 accesos por iteracion del bucle for (8 a, 8 b, 1 d)
-    // 6128 / 17 = 360 iteraciones del bucle for
+    // 6134 / 17. = 360.82 -> 360 iteraciones360
     // sqrt(360) = 18.97 -> 18
     // TAMAÑO DE BLOQUE 15 (para contar con posibles datos que no tuvimos en cuenta)
 
@@ -155,6 +155,8 @@ int main(int argc, char** argv) {
 
     __m512d vec_2 = _mm512_set1_pd(2.0);
     __m512d c_vec = _mm512_load_pd(c);
+    __m256i n_positions = _mm256_set1_epi32(N);
+    __m256i col_positions = _mm256_mullo_epi32(col_positions, _mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7));
 
     //int end = N - (N%8);
     for(int bi = 0; bi < N; bi += BSIZE) {
@@ -191,10 +193,7 @@ int main(int argc, char** argv) {
                     // donde la fila se calcula como: i*N
 
                     // Calculamos el vector de posiciones de b
-                    __m256i b_positions = _mm256_set1_epi32(N);
-                    b_positions = _mm256_mullo_epi32(b_positions, _mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7));
-                    b_positions = _mm256_add_epi32(b_positions, _mm256_set1_epi32(j));
-
+                    __m256i b_positions = _mm256_add_epi32(col_positions, _mm256_set1_epi32(j));
 
                     __m512d b_vec = _mm512_i32gather_pd(b_positions, b, 8);
 
@@ -227,7 +226,7 @@ int main(int argc, char** argv) {
         // Indice de las columnas de la matriz d
         __m256i ind_col = _mm256_load_si256((__m256i*)&ind[i]);
 
-        __m256i ind_rows = _mm256_mullo_epi32(ind_col, _mm256_set1_epi32(N));
+        __m256i ind_rows = _mm256_mullo_epi32(ind_col, n_positions);
 
         __m256i ind_vec = _mm256_add_epi32(ind_rows, ind_col);
 
@@ -262,6 +261,7 @@ int main(int argc, char** argv) {
      // printf("CICLOS DE RELOJ: %.2f\n", n_ck);
 
     // Printf final para coger datos
+    fprintf(stdout, "%.2f\n", f);
     fprintf(stdout, "%.2f\n", n_ck);
 }
 

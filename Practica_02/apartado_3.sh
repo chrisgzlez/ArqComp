@@ -18,7 +18,8 @@ gcc p2_apartado3.c  -o p23 -O0 -march=native
 
 echo "N, ck" >> "results/results/version3_o0.csv"
 
-
+for i in {1..10}
+do
 for N in 250 500 750 1000 1500 2000 2550 3000
 do
 
@@ -38,6 +39,7 @@ do
         flag=1
     fi
 
+done
 done
 
 if [[ $flag == 0 ]]
